@@ -23,15 +23,25 @@ public class JwtCreatorContext {
         jwtDto = dto;
     }
 
+    protected void given(String token) {
+        this.token = token;
+    }
+
     protected void givenValidJwtDto() {
-        Date today = Date.from(Instant.now().truncatedTo(ChronoUnit.DAYS));
-        Date tomorrow = Date.from(today.toInstant().plus(1, ChronoUnit.DAYS));
-        jwtDto = new JwtDto("1", today, tomorrow);
+        jwtDto = validDto();
     }
 
     protected void whenTokenIsGenerated() {
         try {
             token = jwtCreator.generateToken(jwtDto);
+        } catch (Exception e) {
+            error = e;
+        }
+    }
+
+    protected void whenJwtDtoIsRecovered() {
+        try {
+            jwtDto = jwtCreator.getJwtDtoFromToken(token);
         } catch (Exception e) {
             error = e;
         }
@@ -50,5 +60,28 @@ public class JwtCreatorContext {
         assertThat(error)
                 .isInstanceOf(exceptionClass)
                 .hasMessage(expectedMessage);
+    }
+
+    protected void thenShouldThrow(Class<? extends Exception> exceptionClass) {
+        assertThat(error).isInstanceOf(exceptionClass);
+    }
+
+
+    protected void thenShouldRecoverDataFromToken() {
+        JwtDto dto = jwtCreator.getJwtDtoFromToken(token);
+        assertThat(dto).isEqualTo(jwtDto);
+    }
+
+    protected static JwtDto validDto() {
+        Date today = Date.from(Instant.now().truncatedTo(ChronoUnit.DAYS));
+        Date tomorrow = Date.from(today.toInstant().plus(1, ChronoUnit.DAYS));
+        return new JwtDto("1", today, tomorrow);
+    }
+
+    protected String expiredToken() {
+        Date today = Date.from(Instant.now().truncatedTo(ChronoUnit.DAYS));
+        Date tomorrow = Date.from(today.toInstant().plus(1, ChronoUnit.DAYS));
+
+        return jwtCreator.generateToken(new JwtDto("1", tomorrow, today));
     }
 }

@@ -21,6 +21,13 @@ public class JwtCreator {
                 .compact();
     }
 
+    public JwtDto getJwtDtoFromToken(String token) {
+        var claims = Jwts.parser()
+                .setSigningKey(securityConfiguration.key())
+                .parseClaimsJws(token).getBody();
+        return new JwtDto(claims.getSubject(), claims.getIssuedAt(), claims.getExpiration());
+    }
+
     private void validateJwtDto(JwtDto dto) {
         if (dto.subject() == null)
             throw new InvalidJwtDto("Subject cannot be null");

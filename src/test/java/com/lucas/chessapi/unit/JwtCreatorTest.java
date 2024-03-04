@@ -5,6 +5,7 @@ import com.lucas.chessapi.domain.JwtCreatorContext;
 import com.lucas.chessapi.exceptions.InvalidJwtDto;
 import com.lucas.chessapi.security.jwt.JwtCreator;
 import com.lucas.chessapi.security.jwt.JwtDto;
+import io.jsonwebtoken.ExpiredJwtException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -62,5 +63,19 @@ public class JwtCreatorTest extends JwtCreatorContext {
         given(jwtDtoWithNullExpirationDate);
         whenTokenIsGenerated();
         thenShouldThrow(InvalidJwtDto.class, "Expiration date cannot be null");
+    }
+
+    @Test
+    void shouldRecoverDataFromValidToken() {
+        given(validDto());
+        whenTokenIsGenerated();
+        thenShouldRecoverDataFromToken();
+    }
+
+    @Test
+    void shouldThrowExpiredJwtExceptionWhenTokenIsExpired() {
+        given(expiredToken());
+        whenJwtDtoIsRecovered();
+        thenShouldThrow(ExpiredJwtException.class);
     }
 }
