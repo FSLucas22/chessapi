@@ -14,9 +14,7 @@ public class JwtCreator {
         validateJwtDto(dto);
 
         return Jwts.builder()
-                .setSubject(dto.subject())
-                .setIssuedAt(dto.issuedAt())
-                .setExpiration(dto.expiration())
+                .setClaims(dto.toClaims())
                 .signWith(SignatureAlgorithm.HS512, securityConfiguration.key())
                 .compact();
     }
@@ -25,7 +23,7 @@ public class JwtCreator {
         var claims = Jwts.parser()
                 .setSigningKey(securityConfiguration.key())
                 .parseClaimsJws(token).getBody();
-        return new JwtDto(claims.getSubject(), claims.getIssuedAt(), claims.getExpiration());
+        return JwtDto.fromClaims(claims);
     }
 
     private void validateJwtDto(JwtDto dto) {
