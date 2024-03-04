@@ -1,7 +1,9 @@
 package com.lucas.chessapi.security.jwt;
 
 import com.lucas.chessapi.configuration.SecurityConfiguration;
+import com.lucas.chessapi.exceptions.ExpiredTokenException;
 import com.lucas.chessapi.exceptions.InvalidJwtDto;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
@@ -20,10 +22,14 @@ public class JwtCreator {
     }
 
     public JwtDto getJwtDtoFromToken(String token) {
-        var claims = Jwts.parser()
-                .setSigningKey(securityConfiguration.key())
-                .parseClaimsJws(token).getBody();
-        return JwtDto.fromClaims(claims);
+        try {
+            var claims = Jwts.parser()
+                    .setSigningKey(securityConfiguration.key())
+                    .parseClaimsJws(token).getBody();
+            return JwtDto.fromClaims(claims);
+        } catch (ExpiredJwtException e) {
+            throw new ExpiredTokenException(e.getHeader(), e.getClaims(), "Token is expired");
+        }
     }
 
     private void validateJwtDto(JwtDto dto) {

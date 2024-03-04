@@ -2,10 +2,10 @@ package com.lucas.chessapi.unit;
 
 import com.lucas.chessapi.configuration.SecurityConfiguration;
 import com.lucas.chessapi.domain.JwtCreatorContext;
+import com.lucas.chessapi.exceptions.ExpiredTokenException;
 import com.lucas.chessapi.exceptions.InvalidJwtDto;
 import com.lucas.chessapi.security.jwt.JwtCreator;
 import com.lucas.chessapi.security.jwt.JwtDto;
-import io.jsonwebtoken.ExpiredJwtException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -73,9 +73,9 @@ public class JwtCreatorTest extends JwtCreatorContext {
     }
 
     @Test
-    void shouldThrowExpiredJwtExceptionWhenTokenIsExpired() {
+    void shouldThrowExpiredTokenExceptionWhenTokenIsExpired() {
         given(expiredToken());
         whenJwtDtoIsRecovered();
-        thenShouldThrow(ExpiredJwtException.class);
+        thenShouldThrow(ExpiredTokenException.class, "Token is expired");
     }
 }
