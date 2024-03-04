@@ -11,7 +11,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatException;
 
 public class JwtCreatorContext {
     protected SecurityConfiguration securityConfiguration;
