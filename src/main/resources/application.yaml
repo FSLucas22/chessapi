@@ -1,0 +1,17 @@
+spring:
+  jpa:
+    spring.jpa.database-plataform: org.hibernate.H2DatabaseDialect
+    show-sql: true
+  datasource:
+    driverClassName: org.h2.Driver
+    url: jdbc:h2:mem:testdb
+    username: user
+    password: 1234
+  h2:
+    console:
+      enabled: true
+security:
+  config:
+    prefix: Bearer
+    key: SECRET_KEY
+    expiration: 3600000
