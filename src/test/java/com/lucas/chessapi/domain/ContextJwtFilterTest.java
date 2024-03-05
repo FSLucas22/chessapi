@@ -66,6 +66,14 @@ public class ContextJwtFilterTest extends TestContextHelper {
         doNothing().when(filterChain).doFilter(request, response);
     }
 
+    protected void givenNoUserIsFound(String forToken) {
+        when(request.getHeader("Authorization")).thenReturn("Bearer " + forToken);
+        doNothing().when(validator).validate(forToken);
+        when(jwtCreator.getJwtDtoFromToken(forToken))
+                .thenReturn(jwtDtoWithSubject("1"));
+        when(repository.findById(1L)).thenReturn(Optional.empty());
+    }
+
     protected void givenValidatorThrows(Exception error, String forToken) {
         token = forToken;
         when(request.getHeader("Authorization")).thenReturn("Bearer " + forToken);

@@ -36,4 +36,12 @@ public class JwtFilterTest extends ContextJwtFilterTest {
         thenShouldThrow(InvalidTokenException.class, "test");
         thenShouldNeverProcessToken();
     }
+
+    @Test
+    void shouldThrowInvalidTokenExceptionWhenSubjectDontMatchAUserId() {
+        var invalidToken = "1234";
+        givenNoUserIsFound(invalidToken);
+        whenFilterIsCalled();
+        thenShouldThrow(InvalidTokenException.class, "User not found");
+    }
 }

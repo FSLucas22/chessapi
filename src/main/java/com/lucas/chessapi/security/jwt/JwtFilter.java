@@ -1,5 +1,6 @@
 package com.lucas.chessapi.security.jwt;
 
+import com.lucas.chessapi.exceptions.InvalidTokenException;
 import com.lucas.chessapi.repository.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -37,7 +38,8 @@ public class JwtFilter extends OncePerRequestFilter {
         validator.validate(token);
         var dto = jwtCreator.getJwtDtoFromToken(token);
         var userId = Long.parseLong(dto.subject());
-        var user = repository.findById(userId).get();
+        var user = repository.findById(userId)
+                .orElseThrow(() -> new InvalidTokenException("User not found"));
 
         return new UsernamePasswordAuthenticationToken(user, null, List.of());
     }
