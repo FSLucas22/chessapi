@@ -11,6 +11,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Date;
 
+import static com.lucas.chessapi.builders.JwtDtoFactory.jwtDtoWithSubject;
+
 public class JwtCreatorTest extends JwtCreatorContext {
     @BeforeEach
     void setUp() {
@@ -77,5 +79,12 @@ public class JwtCreatorTest extends JwtCreatorContext {
         given(expiredToken());
         whenJwtDtoIsRecovered();
         thenShouldThrow(ExpiredTokenException.class, "Token is expired");
+    }
+
+    @Test
+    void shouldThrowInvalidJwtDtoWhenSubjectIsNotLong() {
+        given(jwtDtoWithSubject("abc"));
+        whenTokenIsGenerated();
+        thenShouldThrow(InvalidJwtDto.class, "Subject must be a valid Long");
     }
 }

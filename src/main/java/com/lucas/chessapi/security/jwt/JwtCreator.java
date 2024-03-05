@@ -39,6 +39,12 @@ public class JwtCreator {
         if (dto.subject().isBlank())
             throw new InvalidJwtDto("Subject cannot be blank");
 
+        try {
+            Long.parseLong(dto.subject());
+        } catch (NumberFormatException e) {
+            throw new InvalidJwtDto("Subject must be a valid Long");
+        }
+
         if (dto.issuedAt() == null)
             throw new InvalidJwtDto("Issue date cannot be null");
 
