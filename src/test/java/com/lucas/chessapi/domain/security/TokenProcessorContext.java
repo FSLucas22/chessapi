@@ -2,16 +2,17 @@ package com.lucas.chessapi.domain.security;
 
 import com.lucas.chessapi.configuration.SecurityConfiguration;
 import com.lucas.chessapi.domain.TestContextHelper;
-import com.lucas.chessapi.security.jwt.JwtCreator;
+import com.lucas.chessapi.security.jwt.TokenProcessor;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+
 import java.util.Date;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class JwtCreatorContext extends TestContextHelper {
+public class TokenProcessorContext extends TestContextHelper {
     protected SecurityConfiguration securityConfiguration;
-    protected JwtCreator jwtCreator;
+    protected TokenProcessor tokenProcessor;
     private String token;
     private String subject;
 
@@ -20,7 +21,12 @@ public class JwtCreatorContext extends TestContextHelper {
     }
 
     protected void whenIssueTokenIsCalled(Date forIssueDate) {
-        token = jwtCreator.issueToken(subject, forIssueDate);
+        token = tokenProcessor.issueToken(subject, forIssueDate);
+    }
+
+    protected void thenShouldRecoverDataFromToken() {
+        var dto = tokenProcessor.getJwtTokenDtoFromToken(token);
+        thenParsedClaimsFieldsShouldMatch(dto.toClaims());
     }
 
     protected void thenParsedClaimsFieldsShouldMatch(Claims expectedClaims) {
@@ -30,10 +36,5 @@ public class JwtCreatorContext extends TestContextHelper {
         assertThat(claims.getSubject()).isEqualTo(expectedClaims.getSubject());
         assertThat(claims.getIssuedAt()).isEqualTo(expectedClaims.getIssuedAt());
         assertThat(claims.getExpiration()).isEqualTo(expectedClaims.getExpiration());
-    }
-
-    protected void thenShouldRecoverDataFromToken() {
-        var dto = jwtCreator.getJwtDtoFromToken(token);
-        thenParsedClaimsFieldsShouldMatch(dto.toClaims());
     }
 }

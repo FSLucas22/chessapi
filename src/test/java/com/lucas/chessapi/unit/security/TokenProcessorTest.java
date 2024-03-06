@@ -2,13 +2,13 @@ package com.lucas.chessapi.unit.security;
 
 import com.lucas.chessapi.builders.DateFactory;
 import com.lucas.chessapi.configuration.SecurityConfiguration;
-import com.lucas.chessapi.domain.security.JwtCreatorContext;
-import com.lucas.chessapi.security.jwt.JwtCreator;
+import com.lucas.chessapi.domain.security.TokenProcessorContext;
+import com.lucas.chessapi.security.jwt.TokenProcessor;
 import io.jsonwebtoken.Jwts;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class JwtCreatorTest extends JwtCreatorContext {
+public class TokenProcessorTest extends TokenProcessorContext {
     @BeforeEach
     void setUp() {
         securityConfiguration = new SecurityConfiguration(
@@ -16,7 +16,7 @@ public class JwtCreatorTest extends JwtCreatorContext {
                 "SECRET_KEY",
                 36000L
         );
-        jwtCreator = new JwtCreator(securityConfiguration);
+        tokenProcessor = new TokenProcessor(securityConfiguration);
     }
 
     @Test

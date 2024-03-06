@@ -5,7 +5,7 @@ import io.jsonwebtoken.Jwts;
 
 import java.util.Date;
 
-public record JwtDto(String subject, Date issuedAt, Date expiration) {
+public record JwtTokenDto(String subject, Date issuedAt, Date expiration) {
     public Claims toClaims() {
         return Jwts.claims()
                 .setSubject(subject)
@@ -13,7 +13,7 @@ public record JwtDto(String subject, Date issuedAt, Date expiration) {
                 .setExpiration(expiration);
     }
 
-    public static JwtDto fromClaims(Claims claims) {
-        return new JwtDto(claims.getSubject(), claims.getIssuedAt(), claims.getExpiration());
+    public static JwtTokenDto fromClaims(Claims claims) {
+        return new JwtTokenDto(claims.getSubject(), claims.getIssuedAt(), claims.getExpiration());
     }
 }

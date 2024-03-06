@@ -16,7 +16,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
-    private final JwtCreator jwtCreator;
+    private final TokenProcessor tokenProcessor;
     private final UserRepository repository;
     private final JwtTokenValidator validator;
 
@@ -36,7 +36,7 @@ public class JwtFilter extends OncePerRequestFilter {
     private UsernamePasswordAuthenticationToken getAuthenticationToken(String header) {
         var token = extractToken(header);
         validator.validate(token);
-        var dto = jwtCreator.getJwtDtoFromToken(token);
+        var dto = tokenProcessor.getJwtTokenDtoFromToken(token);
         var userId = Long.parseLong(dto.subject());
         var user = repository.findById(userId)
                 .orElseThrow(() -> new InvalidTokenException("User not found"));

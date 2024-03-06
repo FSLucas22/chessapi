@@ -5,7 +5,7 @@ import com.lucas.chessapi.dto.request.AuthRequestDto;
 import com.lucas.chessapi.dto.response.AuthResponseDto;
 import com.lucas.chessapi.model.UserEntity;
 import com.lucas.chessapi.repository.UserRepository;
-import com.lucas.chessapi.security.jwt.JwtCreator;
+import com.lucas.chessapi.security.jwt.TokenProcessor;
 import com.lucas.chessapi.service.impl.AuthServiceImpl;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -26,7 +26,7 @@ public class TestAuthServiceContext extends TestContextHelper {
     UserRepository repository;
 
     @Mock
-    JwtCreator jwtCreator;
+    TokenProcessor tokenProcessor;
 
     @InjectMocks
     AuthServiceImpl service;
@@ -42,7 +42,7 @@ public class TestAuthServiceContext extends TestContextHelper {
     }
 
     protected void givenReturnedTokenIs(String token) {
-        when(jwtCreator.issueToken(anyString(), any())).thenReturn(token);
+        when(tokenProcessor.issueToken(anyString(), any())).thenReturn(token);
     }
 
     protected void whenAuthenticationHappensFor(AuthRequestDto request) {
@@ -64,10 +64,10 @@ public class TestAuthServiceContext extends TestContextHelper {
     }
 
     protected void thenShouldIssueToken() {
-        verify(jwtCreator, times(1)).issueToken(anyString(), any());
+        verify(tokenProcessor, times(1)).issueToken(anyString(), any());
     }
 
     protected void thenShouldNotIssueToken() {
-        verify(jwtCreator, never()).issueToken(anyString(), any());
+        verify(tokenProcessor, never()).issueToken(anyString(), any());
     }
 }

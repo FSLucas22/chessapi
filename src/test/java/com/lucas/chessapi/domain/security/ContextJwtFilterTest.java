@@ -3,9 +3,9 @@ package com.lucas.chessapi.domain.security;
 import com.lucas.chessapi.domain.TestContextHelper;
 import com.lucas.chessapi.model.UserEntity;
 import com.lucas.chessapi.repository.UserRepository;
-import com.lucas.chessapi.security.jwt.JwtCreator;
 import com.lucas.chessapi.security.jwt.JwtFilter;
 import com.lucas.chessapi.security.jwt.JwtTokenValidator;
+import com.lucas.chessapi.security.jwt.TokenProcessor;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,31 +19,23 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import java.io.IOException;
 import java.util.Optional;
 
-import static com.lucas.chessapi.builders.JwtDtoFactory.jwtDtoWithSubject;
+import static com.lucas.chessapi.builders.JwtTokenDtoFactory.jwtTokenDtoWithSubject;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.never;
 
 @ExtendWith(MockitoExtension.class)
 public class ContextJwtFilterTest extends TestContextHelper {
     @Mock
+    UserRepository repository;
+    @Mock
+    TokenProcessor tokenProcessor;
+    @Mock
     private HttpServletRequest request;
-
     @Mock
     private HttpServletResponse response;
-
     @Mock
     private FilterChain filterChain;
-
-    @Mock
-    UserRepository repository;
-
-    @Mock
-    JwtCreator jwtCreator;
-
     @Mock
     private JwtTokenValidator validator;
 
@@ -61,8 +53,8 @@ public class ContextJwtFilterTest extends TestContextHelper {
         this.token = forToken;
         when(request.getHeader("Authorization")).thenReturn("Bearer " + forToken);
         doNothing().when(validator).validate(forToken);
-        when(jwtCreator.getJwtDtoFromToken(forToken))
-                .thenReturn(jwtDtoWithSubject(user.getId().toString()));
+        when(tokenProcessor.getJwtTokenDtoFromToken(forToken))
+                .thenReturn(jwtTokenDtoWithSubject(user.getId().toString()));
         when(repository.findById(user.getId())).thenReturn(Optional.of(user));
         doNothing().when(filterChain).doFilter(request, response);
     }
@@ -70,8 +62,8 @@ public class ContextJwtFilterTest extends TestContextHelper {
     protected void givenNoUserIsFound(String forToken) {
         when(request.getHeader("Authorization")).thenReturn("Bearer " + forToken);
         doNothing().when(validator).validate(forToken);
-        when(jwtCreator.getJwtDtoFromToken(forToken))
-                .thenReturn(jwtDtoWithSubject("1"));
+        when(tokenProcessor.getJwtTokenDtoFromToken(forToken))
+                .thenReturn(jwtTokenDtoWithSubject("1"));
         when(repository.findById(1L)).thenReturn(Optional.empty());
     }
 
@@ -101,7 +93,7 @@ public class ContextJwtFilterTest extends TestContextHelper {
 
     protected void thenShouldNeverProcessToken() throws ServletException, IOException {
         verify(validator, times(1)).validate(token);
-        verify(jwtCreator, never()).getJwtDtoFromToken(anyString());
+        verify(tokenProcessor, never()).getJwtTokenDtoFromToken(anyString());
         verify(repository, never()).findById(anyLong());
         verify(filterChain, never()).doFilter(any(), any());
     }

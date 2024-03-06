@@ -2,16 +2,18 @@ package com.lucas.chessapi.unit.security;
 
 import com.lucas.chessapi.domain.security.ContextJwtTokenValidatorTest;
 import com.lucas.chessapi.exceptions.InvalidTokenException;
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.MalformedJwtException;
 import org.junit.jupiter.api.Test;
-import static com.lucas.chessapi.builders.JwtDtoFactory.jwtDtoWithSubject;
+
+import static com.lucas.chessapi.builders.JwtTokenDtoFactory.jwtTokenDtoWithSubject;
 
 public class JwtTokenValidatorTest extends ContextJwtTokenValidatorTest {
     private final String token = "1234";
 
     @Test
     void shouldDoNothingWhenTokenIsValid() {
-        var claims = jwtDtoWithSubject("1").toClaims();
+        var claims = jwtTokenDtoWithSubject("1").toClaims();
         givenJwtParserReturnsClaims(claims, token);
         whenValidationIsMadeFor(token);
         thenNothingHappens();
@@ -19,7 +21,7 @@ public class JwtTokenValidatorTest extends ContextJwtTokenValidatorTest {
 
     @Test
     void shouldThrowInvalidTokenExceptionWhenSubjectIsNotLong() {
-        var claims = jwtDtoWithSubject("abc").toClaims();
+        var claims = jwtTokenDtoWithSubject("abc").toClaims();
 
         givenJwtParserReturnsClaims(claims, token);
         whenValidationIsMadeFor(token);
