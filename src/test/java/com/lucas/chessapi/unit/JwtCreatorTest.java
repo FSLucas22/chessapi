@@ -51,9 +51,9 @@ public class JwtCreatorTest extends JwtCreatorContext {
 
     @Test
     void shouldThrowInvalidJwtDtoWhenIssueDateAtIsNull() {
-        var jwtDtoWithNullIssueDateDate = new JwtDto("1", null, new Date());
+        var jwtDtoWithNullIssueDate = new JwtDto("1", null, new Date());
 
-        given(jwtDtoWithNullIssueDateDate);
+        given(jwtDtoWithNullIssueDate);
         whenTokenIsGenerated();
         thenShouldThrow(InvalidJwtDto.class, "Issue date cannot be null");
     }
