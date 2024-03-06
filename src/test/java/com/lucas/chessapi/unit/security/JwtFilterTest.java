@@ -1,4 +1,4 @@
-package com.lucas.chessapi.unit;
+package com.lucas.chessapi.unit.security;
 
 import com.lucas.chessapi.builders.UserEntityBuilder;
 import com.lucas.chessapi.domain.ContextJwtFilterTest;

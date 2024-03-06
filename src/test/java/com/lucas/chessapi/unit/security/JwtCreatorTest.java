@@ -1,4 +1,4 @@
-package com.lucas.chessapi.unit;
+package com.lucas.chessapi.unit.security;
 
 import com.lucas.chessapi.builders.DateFactory;
 import com.lucas.chessapi.configuration.SecurityConfiguration;
