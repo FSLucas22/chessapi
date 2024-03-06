@@ -14,20 +14,20 @@ public class TokenProcessor {
 
     public JwtTokenDto getJwtTokenDtoFromToken(String token) {
         var claims = Jwts.parser()
-                .setSigningKey(securityConfiguration.key())
+                .setSigningKey(securityConfiguration.getKey())
                 .parseClaimsJws(token).getBody();
         return JwtTokenDto.fromClaims(claims);
     }
 
     public String issueToken(String subject, Date issueDate) {
-        var expiration = DateFactory.expirationDate(issueDate, securityConfiguration.expiration());
+        var expiration = DateFactory.expirationDate(issueDate, securityConfiguration.getExpiration());
         return generateToken(new JwtTokenDto(subject, DateFactory.today(), expiration));
     }
 
     private String generateToken(JwtTokenDto dto) {
         return Jwts.builder()
                 .setClaims(dto.toClaims())
-                .signWith(SignatureAlgorithm.HS512, securityConfiguration.key())
+                .signWith(SignatureAlgorithm.HS512, securityConfiguration.getKey())
                 .compact();
     }
 }

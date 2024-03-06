@@ -31,7 +31,7 @@ public class TokenProcessorContext extends TestContextHelper {
 
     protected void thenParsedClaimsFieldsShouldMatch(Claims expectedClaims) {
         Claims claims = Jwts.parser()
-                .setSigningKey(securityConfiguration.key())
+                .setSigningKey(securityConfiguration.getKey())
                 .parseClaimsJws(token).getBody();
         assertThat(claims.getSubject()).isEqualTo(expectedClaims.getSubject());
         assertThat(claims.getIssuedAt()).isEqualTo(expectedClaims.getIssuedAt());

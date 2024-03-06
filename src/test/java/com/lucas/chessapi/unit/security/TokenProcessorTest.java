@@ -11,18 +11,17 @@ import org.junit.jupiter.api.Test;
 public class TokenProcessorTest extends TokenProcessorContext {
     @BeforeEach
     void setUp() {
-        securityConfiguration = new SecurityConfiguration(
-                "Bearer",
-                "SECRET_KEY",
-                36000L
-        );
+        securityConfiguration = new SecurityConfiguration();
+        securityConfiguration.setPrefix("Bearer");
+        securityConfiguration.setKey("SECRET_KEY");
+        securityConfiguration.setExpiration(36000L);
         tokenProcessor = new TokenProcessor(securityConfiguration);
     }
 
     @Test
     void shouldIssueTokenWithCorrectExpirationDate() {
         var issueDate = DateFactory.today();
-        var expirationDate = DateFactory.expirationDate(issueDate, securityConfiguration.expiration());
+        var expirationDate = DateFactory.expirationDate(issueDate, securityConfiguration.getExpiration());
 
         givenSubject("123");
         whenIssueTokenIsCalled(issueDate);
