@@ -1,7 +1,7 @@
 package com.lucas.chessapi.integration.repository;
 
 import com.lucas.chessapi.builders.UserEntityBuilder;
-import com.lucas.chessapi.domain.ContextUserRepositoryTest;
+import com.lucas.chessapi.domain.repository.ContextUserRepositoryTest;
 import org.junit.jupiter.api.Test;
 import java.util.Optional;
 

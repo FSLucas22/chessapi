@@ -1,6 +1,7 @@
-package com.lucas.chessapi.domain;
+package com.lucas.chessapi.domain.security;
 
 import com.lucas.chessapi.configuration.SecurityConfiguration;
+import com.lucas.chessapi.domain.TestContextHelper;
 import com.lucas.chessapi.security.jwt.JwtCreator;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -8,7 +9,7 @@ import java.util.Date;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class JwtCreatorContext extends TestContextHelper{
+public class JwtCreatorContext extends TestContextHelper {
     protected SecurityConfiguration securityConfiguration;
     protected JwtCreator jwtCreator;
     private String token;

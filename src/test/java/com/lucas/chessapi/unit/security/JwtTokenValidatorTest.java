@@ -1,6 +1,6 @@
 package com.lucas.chessapi.unit.security;
 
-import com.lucas.chessapi.domain.ContextJwtTokenValidatorTest;
+import com.lucas.chessapi.domain.security.ContextJwtTokenValidatorTest;
 import com.lucas.chessapi.exceptions.InvalidTokenException;
 import io.jsonwebtoken.*;
 import org.junit.jupiter.api.Test;

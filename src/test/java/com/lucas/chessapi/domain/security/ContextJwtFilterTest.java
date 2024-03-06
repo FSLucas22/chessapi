@@ -1,5 +1,6 @@
-package com.lucas.chessapi.domain;
+package com.lucas.chessapi.domain.security;
 
+import com.lucas.chessapi.domain.TestContextHelper;
 import com.lucas.chessapi.model.UserEntity;
 import com.lucas.chessapi.repository.UserRepository;
 import com.lucas.chessapi.security.jwt.JwtCreator;

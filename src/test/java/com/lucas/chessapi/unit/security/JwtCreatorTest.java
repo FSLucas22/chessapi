@@ -2,7 +2,7 @@ package com.lucas.chessapi.unit.security;
 
 import com.lucas.chessapi.builders.DateFactory;
 import com.lucas.chessapi.configuration.SecurityConfiguration;
-import com.lucas.chessapi.domain.JwtCreatorContext;
+import com.lucas.chessapi.domain.security.JwtCreatorContext;
 import com.lucas.chessapi.security.jwt.JwtCreator;
 import io.jsonwebtoken.Jwts;
 import org.junit.jupiter.api.BeforeEach;

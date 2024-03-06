@@ -1,5 +1,6 @@
-package com.lucas.chessapi.domain;
+package com.lucas.chessapi.domain.repository;
 
+import com.lucas.chessapi.domain.TestContextHelper;
 import com.lucas.chessapi.model.UserEntity;
 import com.lucas.chessapi.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ActiveProfiles("test")
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class ContextUserRepositoryTest extends TestContextHelper{
+public class ContextUserRepositoryTest extends TestContextHelper {
     @Autowired
     private UserRepository repository;
 
