@@ -11,6 +11,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 
@@ -23,11 +24,11 @@ import static org.mockito.Mockito.*;
 public class TestAuthServiceContext extends TestContextHelper {
 
     @Mock
+    protected PasswordEncoder encoder;
+    @Mock
     UserRepository repository;
-
     @Mock
     TokenProcessor tokenProcessor;
-
     @InjectMocks
     AuthServiceImpl service;
 
@@ -35,6 +36,14 @@ public class TestAuthServiceContext extends TestContextHelper {
 
     protected void givenUserExists(UserEntity user) {
         when(repository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
+    }
+
+    protected void givenEncodedPasswordMatches(String unencodedPassword, String encodedPassword) {
+        when(encoder.matches(unencodedPassword, encodedPassword)).thenReturn(true);
+    }
+
+    protected void givenEncodedPasswordDontMatch(String unencodedPassword, String encodedPassword) {
+        when(encoder.matches(unencodedPassword, encodedPassword)).thenReturn(false);
     }
 
     protected void givenUserRepositoryReturnsEmpty() {

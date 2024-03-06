@@ -9,6 +9,8 @@ import com.lucas.chessapi.model.UserEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import static com.lucas.chessapi.Utils.generateRandomString;
+
 public class TestAuthService extends TestAuthServiceContext {
     private AuthRequestDto request;
     private UserEntity user;
@@ -16,11 +18,13 @@ public class TestAuthService extends TestAuthServiceContext {
     @BeforeEach
     void setUp() {
         request = new AuthRequestDto("test@email.com", "test123");
+        var encryptedPassword = generateRandomString();
+
         user = UserEntityBuilder
                 .getBuilder()
                 .id(1L)
                 .email("test@email.com")
-                .password("test123")
+                .password(encryptedPassword)
                 .username("testuser")
                 .build();
     }
@@ -29,6 +33,7 @@ public class TestAuthService extends TestAuthServiceContext {
     void shouldAuthenticateUserWithCorrectRequest() {
         givenUserExists(user);
         givenReturnedTokenIs("1234");
+        givenEncodedPasswordMatches("test123", user.getPassword());
         whenAuthenticationHappensFor(request);
         thenShouldConsultReposityWithEmail("test@email.com");
         thenShouldIssueToken();
@@ -46,8 +51,9 @@ public class TestAuthService extends TestAuthServiceContext {
 
     @Test
     void shouldThrowUserAuthenticationExceptionWhenPasswordIsIncorrect() {
-        request = new AuthRequestDto("test@email.com", "1234");
+        request = new AuthRequestDto("test@email.com", "test123");
         givenUserExists(user);
+        givenEncodedPasswordDontMatch("test123", user.getPassword());
         whenAuthenticationHappensFor(request);
         thenShouldConsultReposityWithEmail("test@email.com");
         thenShouldThrow(UserAuthenticationException.class, "Invalid email or password");
