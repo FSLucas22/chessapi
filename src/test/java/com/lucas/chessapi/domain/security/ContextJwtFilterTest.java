@@ -21,7 +21,8 @@ import java.util.Optional;
 
 import static com.lucas.chessapi.builders.JwtTokenDtoFactory.jwtTokenDtoWithSubject;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -73,6 +74,14 @@ public class ContextJwtFilterTest extends TestContextHelper {
         doThrow(error).when(validator).validate(forToken);
     }
 
+    protected void givenHeaderIsNullFor(String header) {
+        when(request.getHeader(header)).thenReturn(null);
+    }
+
+    protected void givenHeaderWithoutPrefixFor(String header) {
+        when(request.getHeader(header)).thenReturn("Something");
+    }
+
     protected void whenFilterIsCalled() {
         try {
             filter.doFilter(request, response, filterChain);
@@ -92,9 +101,20 @@ public class ContextJwtFilterTest extends TestContextHelper {
     }
 
     protected void thenShouldNeverProcessToken() throws ServletException, IOException {
-        verify(validator, times(1)).validate(token);
         verify(tokenProcessor, never()).getJwtTokenDtoFromToken(anyString());
         verify(repository, never()).findById(anyLong());
-        verify(filterChain, never()).doFilter(any(), any());
+    }
+
+    protected void thenShouldCallValidator() {
+        verify(validator, times(1)).validate(token);
+    }
+
+    protected void thenShouldNotCallValidator() {
+        verify(validator, never()).validate(anyString());
+    }
+
+    protected void thenSecurityContextShouldHaveNothing() {
+        assertThat(SecurityContextHolder.getContext().getAuthentication())
+                .isNull();
     }
 }
