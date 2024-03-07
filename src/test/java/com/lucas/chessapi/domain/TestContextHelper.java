@@ -11,6 +11,15 @@ public class TestContextHelper {
                 .hasMessage(expectedMessage);
     }
 
+    protected void thenShouldThrowContaining(
+            Class<? extends Exception> exceptionClass,
+            String... messageParts
+    ) {
+        assertThat(error)
+                .isInstanceOf(exceptionClass)
+                .hasMessageContainingAll(messageParts);
+    }
+
     protected void thenShouldHaveNoErrors() {
         assertThat(error).isNull();
     }

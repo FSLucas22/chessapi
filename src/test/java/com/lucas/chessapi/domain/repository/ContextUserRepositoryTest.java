@@ -33,6 +33,15 @@ public class ContextUserRepositoryTest extends TestContextHelper {
         returnedUser = repository.findByEmail(email);
     }
 
+    protected void whenUserIsSaved(UserEntity user) {
+        try {
+            repository.save(user);
+        } catch (Exception e) {
+            error = e;
+        }
+
+    }
+
     protected void thenReturnedUserShouldBeEqual(Optional<UserEntity> possibleUser) {
         assertThat(returnedUser)
                 .usingRecursiveComparison()

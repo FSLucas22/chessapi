@@ -5,14 +5,19 @@ import com.lucas.chessapi.model.UserEntity;
 import java.time.LocalDate;
 
 public class UserEntityBuilder {
-    UserEntity entity = new UserEntity();
+    private Long id;
+    private String username;
+    private String email;
+    private String password;
+    private LocalDate registeredAt;
+    private LocalDate updatedAt;
 
     public static UserEntityBuilder getBuilder() {
         return new UserEntityBuilder();
     }
 
     public UserEntity build() {
-        return entity;
+        return new UserEntity(id, username, email, password, registeredAt, updatedAt);
     }
 
 
@@ -22,32 +27,32 @@ public class UserEntityBuilder {
     }
 
     public UserEntityBuilder updatedAt(LocalDate updatedDate) {
-        entity.setUpdatedAt(updatedDate);
+        this.updatedAt = updatedDate;
         return this;
     }
 
     public UserEntityBuilder registeredAt(LocalDate registeredDate) {
-        entity.setRegisteredAt(registeredDate);
+        this.registeredAt = registeredDate;
         return this;
     }
 
     public UserEntityBuilder id(Long id) {
-        entity.setId(id);
+        this.id = id;
         return this;
     }
 
     public UserEntityBuilder username(String username) {
-        entity.setUsername(username);
+        this.username = username;
         return this;
     }
 
     public UserEntityBuilder email(String email) {
-        entity.setEmail(email);
+        this.email = email;
         return this;
     }
 
     public UserEntityBuilder password(String password) {
-        entity.setPassword(password);
+        this.password = password;
         return this;
     }
 }
