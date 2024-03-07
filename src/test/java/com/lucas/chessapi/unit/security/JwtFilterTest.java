@@ -33,6 +33,7 @@ public class JwtFilterTest extends ContextJwtFilterTest {
 
         givenValidatorThrows(new InvalidTokenException("test"), invalidToken);
         whenFilterIsCalled();
+        thenShouldCallValidator();
         thenShouldThrow(InvalidTokenException.class, "test");
         thenShouldNeverProcessToken();
     }
@@ -43,5 +44,25 @@ public class JwtFilterTest extends ContextJwtFilterTest {
         givenNoUserIsFound(invalidToken);
         whenFilterIsCalled();
         thenShouldThrow(InvalidTokenException.class, "User not found");
+    }
+
+    @Test
+    void shouldNotSaveUserInContextWhenHeaderIsNull() throws ServletException, IOException {
+        givenHeaderIsNullFor("Authorization");
+        whenFilterIsCalled();
+        thenShouldHaveNoErrors();
+        thenShouldNotCallValidator();
+        thenShouldNeverProcessToken();
+        thenSecurityContextShouldHaveNothing();
+    }
+
+    @Test
+    void shouldNotSaveUserInContextWhenHeaderDontHavePrefix() throws ServletException, IOException {
+        givenHeaderWithoutPrefixFor("Authorization");
+        whenFilterIsCalled();
+        thenShouldHaveNoErrors();
+        thenShouldNotCallValidator();
+        thenShouldNeverProcessToken();
+        thenSecurityContextShouldHaveNothing();
     }
 }

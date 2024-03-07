@@ -27,9 +27,10 @@ public class JwtFilter extends OncePerRequestFilter {
             FilterChain filterChain
     ) throws ServletException, IOException {
         var header = request.getHeader("Authorization");
-        var authenticationToken = getAuthenticationToken(header);
-
-        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+        if (header != null && header.startsWith("Bearer ")) {
+            var authenticationToken = getAuthenticationToken(header);
+            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+        }
         filterChain.doFilter(request, response);
     }
 
