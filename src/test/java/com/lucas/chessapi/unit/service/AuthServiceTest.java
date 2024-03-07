@@ -1,6 +1,6 @@
 package com.lucas.chessapi.unit.service;
 
-import com.lucas.chessapi.builders.UserEntityBuilder;
+import com.lucas.chessapi.builders.UserEntityBuilderExtension;
 import com.lucas.chessapi.domain.service.ContextAuthServiceTest;
 import com.lucas.chessapi.dto.request.AuthRequestDto;
 import com.lucas.chessapi.dto.response.AuthResponseDto;
@@ -20,7 +20,7 @@ public class AuthServiceTest extends ContextAuthServiceTest {
         request = new AuthRequestDto("test@email.com", "test123");
         var encryptedPassword = generateRandomString();
 
-        user = UserEntityBuilder
+        user = UserEntityBuilderExtension
                 .getBuilder()
                 .id(1L)
                 .email("test@email.com")

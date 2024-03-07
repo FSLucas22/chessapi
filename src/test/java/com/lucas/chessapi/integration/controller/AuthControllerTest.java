@@ -1,6 +1,6 @@
 package com.lucas.chessapi.integration.controller;
 
-import com.lucas.chessapi.builders.UserEntityBuilder;
+import com.lucas.chessapi.builders.UserEntityBuilderExtension;
 import com.lucas.chessapi.domain.controller.ContextAuthControllerTest;
 import com.lucas.chessapi.dto.request.AuthRequestDto;
 import com.lucas.chessapi.model.UserEntity;
@@ -23,7 +23,7 @@ public class AuthControllerTest extends ContextAuthControllerTest {
         unencodedPassword = generateRandomString();
         var encryptedPassword = encoder.encode(unencodedPassword);
 
-        user = UserEntityBuilder
+        user = UserEntityBuilderExtension
                 .getBuilder()
                 .createdNow()
                 .id(null)

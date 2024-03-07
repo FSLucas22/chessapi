@@ -1,6 +1,6 @@
 package com.lucas.chessapi.unit.security;
 
-import com.lucas.chessapi.builders.UserEntityBuilder;
+import com.lucas.chessapi.builders.UserEntityBuilderExtension;
 import com.lucas.chessapi.domain.security.ContextUserDetailsServiceTest;
 import com.lucas.chessapi.security.userdetails.UserDetailsImpl;
 import org.junit.jupiter.api.Test;
@@ -9,7 +9,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 public class UserDetailsServiceTest extends ContextUserDetailsServiceTest {
     @Test
     void shouldLoadUserByEmail() {
-        var user = UserEntityBuilder
+        var user = UserEntityBuilderExtension
                 .valid()
                 .email("test@email.com")
                 .build();

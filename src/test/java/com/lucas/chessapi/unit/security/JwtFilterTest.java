@@ -1,6 +1,6 @@
 package com.lucas.chessapi.unit.security;
 
-import com.lucas.chessapi.builders.UserEntityBuilder;
+import com.lucas.chessapi.builders.UserEntityBuilderExtension;
 import com.lucas.chessapi.domain.security.ContextJwtFilterTest;
 import com.lucas.chessapi.exceptions.InvalidTokenException;
 import jakarta.servlet.ServletException;
@@ -20,7 +20,7 @@ public class JwtFilterTest extends ContextJwtFilterTest {
     @Test
     void shouldSetUserAuthenticationWhenTokenIsValid() throws ServletException, IOException {
         var validToken = "1234";
-        var user = UserEntityBuilder.validUserEntity();
+        var user = UserEntityBuilderExtension.validUserEntity();
         givenPrefixIs("Bearer");
         givenUserIsFound(user, validToken);
         whenFilterIsCalled();
