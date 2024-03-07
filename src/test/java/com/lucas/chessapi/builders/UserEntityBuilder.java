@@ -12,7 +12,13 @@ public class UserEntityBuilder {
                 .id(1L)
                 .email("user@test.com")
                 .password("test123")
-                .username("testuser");
+                .username("testuser")
+                .createdNow();
+    }
+
+    public UserEntityBuilder createdNow() {
+        var now = LocalDate.now();
+        return this.registeredAt(now).updatedAt(now);
     }
 
     public UserEntityBuilder username(String username) {
@@ -39,6 +45,16 @@ public class UserEntityBuilder {
         return new UserEntityBuilder();
     }
 
+    public UserEntityBuilder updatedAt(LocalDate updatedDate) {
+        entity.setUpdatedAt(updatedDate);
+        return this;
+    }
+
+    public UserEntityBuilder registeredAt(LocalDate registeredDate) {
+        entity.setRegisteredAt(registeredDate);
+        return this;
+    }
+
     public static UserEntity validUserEntity() {
         return validUserEntityWithId(1L);
     }
@@ -54,20 +70,5 @@ public class UserEntityBuilder {
 
     public UserEntity build() {
         return entity;
-    }
-
-    public UserEntityBuilder createdNow() {
-        var now = LocalDate.now();
-        return this.registeredAt(now).updatedAt(now);
-    }
-
-    public UserEntityBuilder updatedAt(LocalDate updatedDate) {
-        entity.setUpdatedAt(updatedDate);
-        return this;
-    }
-
-    public UserEntityBuilder registeredAt(LocalDate registeredDate) {
-        entity.setRegisteredAt(registeredDate);
-        return this;
     }
 }
