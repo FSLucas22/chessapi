@@ -22,6 +22,7 @@ public class WebSecurity {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(request -> request
                         .requestMatchers(HttpMethod.POST, "/chessapi/auth").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/chessapi/user").permitAll()
                         .anyRequest().authenticated()
                 )
                 .build();
