@@ -6,6 +6,8 @@ import com.lucas.chessapi.dto.request.AuthRequestDto;
 import com.lucas.chessapi.model.UserEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static com.lucas.chessapi.Utils.generateRandomString;
 import static org.hamcrest.Matchers.equalTo;
@@ -14,6 +16,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class AuthControllerTest extends ContextAuthControllerTest {
+    @Autowired
+    private PasswordEncoder encoder;
 
     private UserEntity user;
     private String unencodedPassword;
