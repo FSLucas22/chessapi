@@ -16,7 +16,7 @@ public class JwtTokenValidatorTest extends ContextJwtTokenValidatorTest {
         var claims = jwtTokenDtoWithSubject("1").toClaims();
         givenJwtParserReturnsClaims(claims, token);
         whenValidationIsMadeFor(token);
-        thenNothingHappens();
+        thenShouldHaveNoErrors();
     }
 
     @Test
