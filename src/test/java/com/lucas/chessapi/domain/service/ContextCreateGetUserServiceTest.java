@@ -19,7 +19,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class ContextCreateUserServiceTest extends TestContextHelper {
+public class ContextCreateGetUserServiceTest extends TestContextHelper {
 
     @Mock
     private UserRepository repository;
