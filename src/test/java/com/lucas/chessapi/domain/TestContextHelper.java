@@ -14,4 +14,8 @@ public class TestContextHelper {
     protected void thenNothingHappens() {
         assertThat(error).isNull();
     }
+
+    protected void thenShouldHaveNoErrors() {
+        assertThat(error).isNull();
+    }
 }
