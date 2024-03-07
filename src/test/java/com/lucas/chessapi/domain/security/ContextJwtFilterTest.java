@@ -1,5 +1,6 @@
 package com.lucas.chessapi.domain.security;
 
+import com.lucas.chessapi.configuration.SecurityConfiguration;
 import com.lucas.chessapi.domain.TestContextHelper;
 import com.lucas.chessapi.model.UserEntity;
 import com.lucas.chessapi.repository.UserRepository;
@@ -39,12 +40,17 @@ public class ContextJwtFilterTest extends TestContextHelper {
     private FilterChain filterChain;
     @Mock
     private JwtTokenValidator validator;
-
+    @Mock
+    private SecurityConfiguration configuration;
     @InjectMocks
     private JwtFilter filter;
 
     private UserEntity user;
     private String token;
+
+    protected void givenPrefixIs(String prefix) {
+        when(configuration.getPrefix()).thenReturn(prefix);
+    }
 
     protected void givenUserIsFound(
             UserEntity user,
@@ -100,7 +106,7 @@ public class ContextJwtFilterTest extends TestContextHelper {
         verify(validator, times(1)).validate(token);
     }
 
-    protected void thenShouldNeverProcessToken() throws ServletException, IOException {
+    protected void thenShouldNeverProcessToken() {
         verify(tokenProcessor, never()).getJwtTokenDtoFromToken(anyString());
         verify(repository, never()).findById(anyLong());
     }

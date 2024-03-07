@@ -21,16 +21,16 @@ public class JwtFilterTest extends ContextJwtFilterTest {
     void shouldSetUserAuthenticationWhenTokenIsValid() throws ServletException, IOException {
         var validToken = "1234";
         var user = UserEntityBuilder.validUserEntity();
-
+        givenPrefixIs("Bearer");
         givenUserIsFound(user, validToken);
         whenFilterIsCalled();
         thenSecurityContextShouldHaveUser();
     }
 
     @Test
-    void shouldPropagateErrorThrownByValidator() throws ServletException, IOException {
+    void shouldPropagateErrorThrownByValidator() {
         var invalidToken = "1234";
-
+        givenPrefixIs("Bearer");
         givenValidatorThrows(new InvalidTokenException("test"), invalidToken);
         whenFilterIsCalled();
         thenShouldCallValidator();
@@ -41,13 +41,14 @@ public class JwtFilterTest extends ContextJwtFilterTest {
     @Test
     void shouldThrowInvalidTokenExceptionWhenSubjectDontMatchAUserId() {
         var invalidToken = "1234";
+        givenPrefixIs("Bearer");
         givenNoUserIsFound(invalidToken);
         whenFilterIsCalled();
         thenShouldThrow(InvalidTokenException.class, "User not found");
     }
 
     @Test
-    void shouldNotSaveUserInContextWhenHeaderIsNull() throws ServletException, IOException {
+    void shouldNotSaveUserInContextWhenHeaderIsNull() {
         givenHeaderIsNullFor("Authorization");
         whenFilterIsCalled();
         thenShouldHaveNoErrors();
@@ -57,7 +58,8 @@ public class JwtFilterTest extends ContextJwtFilterTest {
     }
 
     @Test
-    void shouldNotSaveUserInContextWhenHeaderDontHavePrefix() throws ServletException, IOException {
+    void shouldNotSaveUserInContextWhenHeaderDontHavePrefix() {
+        givenPrefixIs("Bearer");
         givenHeaderWithoutPrefixFor("Authorization");
         whenFilterIsCalled();
         thenShouldHaveNoErrors();

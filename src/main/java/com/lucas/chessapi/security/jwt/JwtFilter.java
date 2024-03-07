@@ -1,5 +1,6 @@
 package com.lucas.chessapi.security.jwt;
 
+import com.lucas.chessapi.configuration.SecurityConfiguration;
 import com.lucas.chessapi.exceptions.InvalidTokenException;
 import com.lucas.chessapi.repository.UserRepository;
 import jakarta.servlet.FilterChain;
@@ -19,6 +20,7 @@ public class JwtFilter extends OncePerRequestFilter {
     private final TokenProcessor tokenProcessor;
     private final UserRepository repository;
     private final JwtTokenValidator validator;
+    private final SecurityConfiguration securityConfiguration;
 
     @Override
     protected void doFilterInternal(
@@ -27,11 +29,15 @@ public class JwtFilter extends OncePerRequestFilter {
             FilterChain filterChain
     ) throws ServletException, IOException {
         var header = request.getHeader("Authorization");
-        if (header != null && header.startsWith("Bearer ")) {
+        if (header != null && header.startsWith(getPrefix())) {
             var authenticationToken = getAuthenticationToken(header);
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
         }
         filterChain.doFilter(request, response);
+    }
+
+    private String getPrefix() {
+        return securityConfiguration.getPrefix() + " ";
     }
 
     private UsernamePasswordAuthenticationToken getAuthenticationToken(String header) {
@@ -46,6 +52,6 @@ public class JwtFilter extends OncePerRequestFilter {
     }
 
     private String extractToken(String header) {
-        return header.replace("Bearer ", "");
+        return header.replace(getPrefix(), "");
     }
 }
