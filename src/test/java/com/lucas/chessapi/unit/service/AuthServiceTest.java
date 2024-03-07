@@ -1,7 +1,7 @@
 package com.lucas.chessapi.unit.service;
 
 import com.lucas.chessapi.builders.UserEntityBuilder;
-import com.lucas.chessapi.domain.service.TestAuthServiceContext;
+import com.lucas.chessapi.domain.service.ContextAuthServiceTest;
 import com.lucas.chessapi.dto.request.AuthRequestDto;
 import com.lucas.chessapi.dto.response.AuthResponseDto;
 import com.lucas.chessapi.exceptions.UserAuthenticationException;
@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 
 import static com.lucas.chessapi.Utils.generateRandomString;
 
-public class TestAuthService extends TestAuthServiceContext {
+public class AuthServiceTest extends ContextAuthServiceTest {
     private AuthRequestDto request;
     private UserEntity user;
 

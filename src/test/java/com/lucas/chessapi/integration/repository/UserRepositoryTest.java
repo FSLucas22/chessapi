@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Optional;
 
 
-public class TestUserRepository extends ContextUserRepositoryTest {
+public class UserRepositoryTest extends ContextUserRepositoryTest {
 
     @Test
     void shouldFindUserByEmail() {

@@ -10,7 +10,7 @@ import java.util.Date;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class TokenProcessorContext extends TestContextHelper {
+public class ContextTokenProcessor extends TestContextHelper {
     protected SecurityConfiguration securityConfiguration;
     protected TokenProcessor tokenProcessor;
     private String token;

@@ -21,7 +21,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class TestAuthServiceContext extends TestContextHelper {
+public class ContextAuthServiceTest extends TestContextHelper {
 
     @Mock
     protected PasswordEncoder encoder;
