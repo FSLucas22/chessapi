@@ -9,7 +9,9 @@ import com.lucas.chessapi.security.jwt.TokenProcessor;
 import com.lucas.chessapi.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 
+@Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
     private final UserRepository repository;
