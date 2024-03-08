@@ -63,7 +63,7 @@ public class UserRepositoryTest extends ContextUserRepositoryTest {
         whenFindAllIsCalledWith(pagination);
         thenShouldHaveNoErrors();
 
-        thenReturnedUserListShoudBe(expectedPage);
+        thenReturnedPageShoudBe(expectedPage);
     }
 
     @Test
@@ -73,6 +73,6 @@ public class UserRepositoryTest extends ContextUserRepositoryTest {
         Page<UserEntity> expectedPage = new PageImpl<>(List.of(), pagination, 0);
         whenFindAllIsCalledWith(pagination);
         thenShouldHaveNoErrors();
-        thenReturnedUserListShoudBe(expectedPage);
+        thenReturnedPageShoudBe(expectedPage);
     }
 }

@@ -63,7 +63,7 @@ public class ContextUserRepositoryTest extends TestContextHelper {
                 .isEqualTo(possibleUser);
     }
 
-    protected void thenReturnedUserListShoudBe(Page<UserEntity> userPage) {
+    protected void thenReturnedPageShoudBe(Page<UserEntity> userPage) {
         assertThat(returnedUserPage)
                 .usingRecursiveComparison()
                 .isEqualTo(userPage);
