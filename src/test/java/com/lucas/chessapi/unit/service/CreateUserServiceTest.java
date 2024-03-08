@@ -1,7 +1,7 @@
 package com.lucas.chessapi.unit.service;
 
 import com.lucas.chessapi.builders.UserEntityBuilderExtension;
-import com.lucas.chessapi.domain.service.ContextCreateGetUserServiceTest;
+import com.lucas.chessapi.domain.service.ContextCreateUserServiceTest;
 import com.lucas.chessapi.dto.request.UserCreationRequestDto;
 import com.lucas.chessapi.dto.response.UserCreationResponseDto;
 import com.lucas.chessapi.exceptions.UserCreationException;
@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import static com.lucas.chessapi.Utils.generateRandomString;
 
-public class CreateGetUserServiceTest extends ContextCreateGetUserServiceTest {
+public class CreateUserServiceTest extends ContextCreateUserServiceTest {
     private UserCreationRequestDto request;
 
     @BeforeEach
