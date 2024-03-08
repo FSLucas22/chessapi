@@ -23,6 +23,6 @@ public class GetUserServiceImpl implements GetUserService {
     @Override
     public GetAllUsersResponseDto getAll(GetAllUsersRequestDto request) {
         var pagination = request.generatePagination();
-        return GetAllUsersResponseDto.from(repository.findAll(pagination));
+        return GetAllUsersResponseDto.from(repository.findAll(pagination).stream().toList());
     }
 }

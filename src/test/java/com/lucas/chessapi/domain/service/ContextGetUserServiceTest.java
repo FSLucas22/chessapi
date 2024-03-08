@@ -11,6 +11,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
@@ -34,12 +35,13 @@ public class ContextGetUserServiceTest extends TestContextHelper {
     }
 
     protected void givenUserListIsReturned(List<UserEntity> users) {
-        var page = PageRequest.of(
+        var pageable = PageRequest.of(
                 0,
                 users.size(),
                 Sort.by(Sort.Order.asc("username"))
         );
-        when(repository.findAll(page)).thenReturn(users);
+        when(repository.findAll(pageable))
+                .thenReturn(new PageImpl<>(users, pageable, users.size()));
     }
 
     protected void whenGetByIdIsCalledWith(Long id) {
