@@ -30,7 +30,9 @@ public class CreateGameServiceImpl implements CreateGameService {
         var order = defineOrder(userId, request.adversaryId(), request.strategy());
 
         var newGame = repository.save(
-                new GameEntity(null, order.first().toUserEntity(), order.second().toUserEntity())
+                new GameEntity(
+                        null, order.first().toUserEntity(), order.second().toUserEntity(),
+                        null, null)
         );
 
         return new CreateGameResponseDto(newGame.getId(), order.first(), order.second());

@@ -1,9 +1,9 @@
 package com.lucas.chessapi.integration.repository;
 
+import com.lucas.chessapi.builders.GameEntityBuilder;
 import com.lucas.chessapi.builders.UserEntityBuilder;
 import com.lucas.chessapi.builders.UserEntityBuilderExtension;
 import com.lucas.chessapi.domain.repository.ContextGameRepositoryTest;
-import com.lucas.chessapi.model.GameEntity;
 import com.lucas.chessapi.model.UserEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,7 +25,11 @@ public class GameRepositoryTest extends ContextGameRepositoryTest {
     void shouldReturnUserDataInEntity() {
         var player = user("player");
         var adversary = user("adversary");
-        var game = new GameEntity(null, player, adversary);
+        var game = GameEntityBuilder.valid()
+                .id(null)
+                .firstPlayer(player)
+                .secondPlayer(adversary)
+                .build();
         given(player, adversary);
         given(game);
         whenFindById(game.getId());
@@ -37,7 +41,12 @@ public class GameRepositoryTest extends ContextGameRepositoryTest {
     void shouldNotSaveWithUserThatDontExist() {
         var player = user("player");
         var adversary = user("adversary");
-        var game = new GameEntity(null, player, adversary);
+        var game = GameEntityBuilder
+                .valid()
+                .id(null)
+                .firstPlayer(player)
+                .secondPlayer(adversary)
+                .build();
 
         whenSave(game);
         thenShouldThrow(Exception.class);
@@ -45,7 +54,11 @@ public class GameRepositoryTest extends ContextGameRepositoryTest {
 
     @Test
     void shouldNotSaveWithNullUser() {
-        whenSave(new GameEntity());
+        whenSave(GameEntityBuilder.valid()
+                .id(null)
+                .firstPlayer(null)
+                .secondPlayer(null)
+                .build());
         thenShouldThrow(Exception.class);
     }
 

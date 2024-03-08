@@ -1,7 +1,14 @@
 package com.lucas.chessapi.model;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "t_game")
@@ -22,4 +29,13 @@ public class GameEntity {
     @ManyToOne
     @JoinColumn(nullable = false)
     private UserEntity secondPlayer;
+
+    @Column(nullable = false, updatable = false)
+    @CreationTimestamp
+    private LocalDateTime createdAt = LocalDateTime.now();
+
+    @Column(nullable = false)
+    @UpdateTimestamp
+    private LocalDateTime updatedAt = LocalDateTime.now();
+
 }
