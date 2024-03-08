@@ -3,9 +3,11 @@ package com.lucas.chessapi.integration.repository;
 import com.lucas.chessapi.builders.UserEntityBuilder;
 import com.lucas.chessapi.builders.UserEntityBuilderExtension;
 import com.lucas.chessapi.domain.repository.ContextUserRepositoryTest;
+import com.lucas.chessapi.model.UserEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -61,6 +63,16 @@ public class UserRepositoryTest extends ContextUserRepositoryTest {
         whenFindAllIsCalledWith(pagination);
         thenShouldHaveNoErrors();
 
+        thenReturnedUserListShoudBe(expectedPage);
+    }
+
+    @Test
+    void shouldNotThrowErrorOnPageWithNoUsers() {
+        var sort = Sort.by(Sort.Order.asc("username"));
+        var pagination = PageRequest.of(5, 2, sort);
+        Page<UserEntity> expectedPage = new PageImpl<>(List.of(), pagination, 0);
+        whenFindAllIsCalledWith(pagination);
+        thenShouldHaveNoErrors();
         thenReturnedUserListShoudBe(expectedPage);
     }
 }
