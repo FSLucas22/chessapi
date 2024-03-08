@@ -2,15 +2,15 @@ package com.lucas.chessapi.builders;
 
 import com.lucas.chessapi.model.UserEntity;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class UserEntityBuilder {
     private Long id;
     private String username;
     private String email;
     private String password;
-    private LocalDate registeredAt;
-    private LocalDate updatedAt;
+    private LocalDateTime registeredAt;
+    private LocalDateTime updatedAt;
 
     public static UserEntityBuilder getBuilder() {
         return new UserEntityBuilder();
@@ -22,16 +22,16 @@ public class UserEntityBuilder {
 
 
     public UserEntityBuilder createdNow() {
-        var now = LocalDate.now();
+        var now = LocalDateTime.now();
         return this.registeredAt(now).updatedAt(now);
     }
 
-    public UserEntityBuilder updatedAt(LocalDate updatedDate) {
+    public UserEntityBuilder updatedAt(LocalDateTime updatedDate) {
         this.updatedAt = updatedDate;
         return this;
     }
 
-    public UserEntityBuilder registeredAt(LocalDate registeredDate) {
+    public UserEntityBuilder registeredAt(LocalDateTime registeredDate) {
         this.registeredAt = registeredDate;
         return this;
     }

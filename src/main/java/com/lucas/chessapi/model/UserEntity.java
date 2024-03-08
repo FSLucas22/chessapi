@@ -5,8 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "t_user")
@@ -29,9 +31,11 @@ public class UserEntity {
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false)
-    private LocalDate registeredAt;
+    @Column(nullable = false, updatable = false)
+    @CreationTimestamp
+    private LocalDateTime registeredAt = LocalDateTime.now();
 
     @Column(nullable = false)
-    private LocalDate updatedAt;
+    @UpdateTimestamp
+    private LocalDateTime updatedAt = LocalDateTime.now();
 }
