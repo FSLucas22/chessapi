@@ -1,7 +1,13 @@
 package com.lucas.chessapi.exceptions;
 
-public class GetUserException extends RuntimeException {
+import org.springframework.http.HttpStatus;
+
+public class GetUserException extends BusinessException {
     public GetUserException(String message) {
-        super(message);
+        this(message, HttpStatus.BAD_REQUEST);
+    }
+
+    public GetUserException(String message, HttpStatus status) {
+        super(message, status);
     }
 }

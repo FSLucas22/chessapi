@@ -1,7 +1,13 @@
 package com.lucas.chessapi.exceptions;
 
-public class UserCreationException extends RuntimeException {
+import org.springframework.http.HttpStatus;
+
+public class UserCreationException extends BusinessException {
     public UserCreationException(String message) {
-        super(message);
+        this(message, HttpStatus.CONFLICT);
+    }
+
+    public UserCreationException(String message, HttpStatus status) {
+        super(message, status);
     }
 }

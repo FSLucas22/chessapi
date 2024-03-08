@@ -19,4 +19,13 @@ public class UserEntityBuilderExtension extends UserEntityBuilder {
                 .username("testuser")
                 .createdNow();
     }
+
+    public static UserEntity user(Long id, String username) {
+        return UserEntityBuilderExtension
+                .valid()
+                .id(id)
+                .username(username)
+                .email(username.toLowerCase() + "@email.com")
+                .build();
+    }
 }

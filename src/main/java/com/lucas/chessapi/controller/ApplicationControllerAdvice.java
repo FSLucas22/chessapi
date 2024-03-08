@@ -2,9 +2,8 @@ package com.lucas.chessapi.controller;
 
 import com.lucas.chessapi.dto.response.ErrorResponseDto;
 import com.lucas.chessapi.dto.response.ErrorsResponseDto;
+import com.lucas.chessapi.exceptions.BusinessException;
 import com.lucas.chessapi.exceptions.UserAuthenticationException;
-import com.lucas.chessapi.exceptions.UserCreationException;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -25,11 +24,11 @@ public class ApplicationControllerAdvice {
         return ResponseEntity.badRequest().body(ErrorsResponseDto.from(error.getBindingResult()));
     }
 
-    @ExceptionHandler(UserCreationException.class)
-    public ResponseEntity<ErrorsResponseDto> handle(UserCreationException error) {
+    @ExceptionHandler(BusinessException.class)
+    public ResponseEntity<ErrorsResponseDto> handle(BusinessException error) {
         return new ResponseEntity<>(
                 new ErrorsResponseDto(List.of(error.getMessage())),
-                HttpStatus.CONFLICT
+                error.getStatus()
         );
     }
 }
