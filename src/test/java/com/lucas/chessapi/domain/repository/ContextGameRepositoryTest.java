@@ -9,9 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -32,12 +35,11 @@ public class ContextGameRepositoryTest extends TestContextHelper {
 
     private Optional<GameEntity> result;
 
-    protected void given(UserEntity... users) {
-        Arrays.stream(users).forEach(entityManager::persist);
-    }
+    private Slice<GameEntity> gamesSlice;
 
-    protected void given(GameEntity game) {
-        entityManager.persist(game);
+    @SafeVarargs
+    protected final <T> void given(T... entities) {
+        Arrays.stream(entities).forEach(entityManager::persist);
     }
 
     protected void whenFindById(Long id) {
@@ -56,9 +58,27 @@ public class ContextGameRepositoryTest extends TestContextHelper {
         }
     }
 
+    protected void whenGetAllByUser(UserEntity player, PageRequest pagination) {
+        try {
+            gamesSlice = gameRepository.findAllByUser(player, pagination);
+        } catch (Exception e) {
+            error = e;
+        }
+    }
+
     protected void thenResultShouldMatch(Optional<GameEntity> possibleGame) {
         assertThat(result)
                 .usingRecursiveComparison()
                 .isEqualTo(possibleGame);
+    }
+
+    protected void thenShouldHaveMorePages() {
+        assertThat(gamesSlice.hasNext()).isTrue();
+    }
+
+    protected void thenGamesShouldMatch(List<GameEntity> games) {
+        assertThat(gamesSlice.getContent())
+                .usingRecursiveComparison()
+                .isEqualTo(games);
     }
 }
