@@ -9,6 +9,10 @@ public record PlayerDto(Long id, String username) {
         return new PlayerDto(user.id(), user.username());
     }
 
+    public static PlayerDto from(UserEntity user) {
+        return new PlayerDto(user.getId(), user.getUsername());
+    }
+
     public UserEntity toUserEntity() {
         return UserEntityBuilder.getBuilder()
                 .id(id)
