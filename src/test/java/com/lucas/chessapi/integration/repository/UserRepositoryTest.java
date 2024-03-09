@@ -30,7 +30,7 @@ public class UserRepositoryTest extends ContextUserRepositoryTest {
     @Test
     void shouldFindUserByEmail() {
         var user = userBuilder.build();
-        givenUser(user);
+        given(user);
         whenFindByEmail("test@email.com");
         thenReturnedUserShouldBeEqual(Optional.of(user));
     }
@@ -43,7 +43,7 @@ public class UserRepositoryTest extends ContextUserRepositoryTest {
 
     @Test
     void shouldNotCreateUserWithRepeatedEmail() {
-        givenUser(userBuilder.build());
+        given(userBuilder.build());
         whenUserIsSaved(userBuilder.build());
         thenShouldThrowContaining(
                 DataIntegrityViolationException.class,
@@ -59,7 +59,7 @@ public class UserRepositoryTest extends ContextUserRepositoryTest {
         var sort = Sort.by(Sort.Order.asc("username"));
         var pagination = PageRequest.of(0, 2, sort);
         var expectedPage = new PageImpl<>(List.of(alice, bob), pagination, 2);
-        givenUsers(bob, alice);
+        given(bob, alice);
         whenFindAllIsCalledWith(pagination);
         thenShouldHaveNoErrors();
 

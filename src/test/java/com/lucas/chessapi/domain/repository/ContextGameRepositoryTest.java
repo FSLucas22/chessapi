@@ -1,28 +1,20 @@
 package com.lucas.chessapi.domain.repository;
 
-import com.lucas.chessapi.domain.TestContextHelper;
+import com.lucas.chessapi.domain.RepositoryContextHelper;
 import com.lucas.chessapi.model.GameEntity;
 import com.lucas.chessapi.model.UserEntity;
 import com.lucas.chessapi.repository.GameRepository;
 import com.lucas.chessapi.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
-import org.springframework.test.context.ActiveProfiles;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@ActiveProfiles("test")
-@DataJpaTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class ContextGameRepositoryTest extends TestContextHelper {
+public class ContextGameRepositoryTest extends RepositoryContextHelper {
 
     @Autowired
     private GameRepository gameRepository;
@@ -30,17 +22,9 @@ public class ContextGameRepositoryTest extends TestContextHelper {
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private TestEntityManager entityManager;
-
     private Optional<GameEntity> result;
 
     private Slice<GameEntity> gamesSlice;
-
-    @SafeVarargs
-    protected final <T> void given(T... entities) {
-        Arrays.stream(entities).forEach(entityManager::persist);
-    }
 
     protected void whenFindById(Long id) {
         try {
