@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -70,17 +71,25 @@ public class GameRepositoryTest extends ContextGameRepositoryTest {
     void shouldReturnAllGamesWithUser() {
         var player = user("player");
         var adversary = user("adversary");
-        var game1 = game(adversary, player);
-        var game2 = game(player, adversary);
-        var game3 = game(player, adversary);
-        var game4 = game(player, adversary);
+        var gameList = List.of(
+                game(adversary, player),
+                game(player, adversary),
+                game(player, adversary),
+                game(player, adversary)
+        );
         var pagination = PageRequest.of(0, 3, Sort.by(Sort.Order.desc("updatedAt")));
 
         given(player, adversary);
-        given(game1, game2, game3, game4);
+        given(gameList.toArray(new GameEntity[4]));
+
+        gameList = gameList.stream()
+                .sorted(Comparator.comparing(GameEntity::getUpdatedAt).reversed())
+                .limit(3)
+                .toList();
+
         whenGetAllByUser(player, pagination);
         thenShouldHaveNoErrors();
-        thenGamesShouldMatch(List.of(game4, game3, game2));
+        thenGamesShouldMatch(gameList);
         thenShouldHaveMorePages();
     }
 

@@ -1,41 +1,21 @@
 package com.lucas.chessapi.domain.repository;
 
-import com.lucas.chessapi.domain.TestContextHelper;
+import com.lucas.chessapi.domain.RepositoryContextHelper;
 import com.lucas.chessapi.model.UserEntity;
 import com.lucas.chessapi.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.test.context.ActiveProfiles;
 
-import java.util.Arrays;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@ActiveProfiles("test")
-@DataJpaTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class ContextUserRepositoryTest extends TestContextHelper {
+public class ContextUserRepositoryTest extends RepositoryContextHelper {
     @Autowired
     private UserRepository repository;
-
-    @Autowired
-    private TestEntityManager entityManager;
-
     private Optional<UserEntity> returnedUser;
     private Page<UserEntity> returnedUserPage;
-
-    protected void givenUser(UserEntity user) {
-        entityManager.persist(user);
-    }
-
-    protected void givenUsers(UserEntity... users) {
-        Arrays.stream(users).forEach(entityManager::persist);
-    }
 
     protected void whenFindByEmail(String email) {
         returnedUser = repository.findByEmail(email);
