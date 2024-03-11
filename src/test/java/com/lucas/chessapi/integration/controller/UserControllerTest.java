@@ -106,12 +106,12 @@ public class UserControllerTest extends ContextUserControllerTest {
     }
 
     @Test
-    void shouldReturnStatus400WhenUserDontExist() throws Exception {
+    void shouldReturnStatus404WhenUserDontExist() throws Exception {
         givenAuthenticationHappensFor("test@email.com");
         whenGetUserRequestIsSendFor(-1L);
         thenShouldHaveNoErrors();
         thenIsExpectedFromResponse(
-                status().isBadRequest(),
+                status().isNotFound(),
                 jsonPath("$.errors", hasSize(1)),
                 jsonPath("$.errors[0]", equalTo("User not found"))
         );
