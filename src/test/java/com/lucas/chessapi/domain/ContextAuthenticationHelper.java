@@ -23,6 +23,10 @@ public class ContextAuthenticationHelper {
         token = tokenProcessor.issueToken(user.getId().toString(), today());
     }
 
+    public void clean() {
+        token = null;
+    }
+
     public String getToken() {
         return token;
     }

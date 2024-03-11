@@ -9,6 +9,7 @@ import com.lucas.chessapi.dto.response.GetUserResponseDto;
 import com.lucas.chessapi.exceptions.PlayerNotFoundException;
 import com.lucas.chessapi.game.OrderedPair;
 import com.lucas.chessapi.game.OrderedPairFactory;
+import com.lucas.chessapi.model.GameEntity;
 import com.lucas.chessapi.model.UserEntity;
 import com.lucas.chessapi.repository.GameRepository;
 import com.lucas.chessapi.security.jwt.JwtTokenDto;
@@ -64,6 +65,10 @@ public class ContextCreateGameServiceTest extends TestContextHelper {
 
     protected void givenNewGameIdWillBe(Long id) {
         when(repository.save(any())).thenReturn(GameEntityBuilder.valid().id(id).build());
+    }
+
+    protected void givenNewGameWillBe(GameEntity game) {
+        when(repository.save(any())).thenReturn(game);
     }
 
     protected void givenServiceWillThrowFor(Long playerId, Exception exception) {

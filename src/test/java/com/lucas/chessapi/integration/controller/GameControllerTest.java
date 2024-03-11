@@ -26,6 +26,7 @@ public class GameControllerTest extends ContextGameControllerTest {
 
     @BeforeEach
     void setUp() {
+        authContext.clean();
         alice = user(null, "Alice");
         bob = user(null, "Bob");
 

@@ -1,5 +1,6 @@
 package com.lucas.chessapi.unit.service;
 
+import com.lucas.chessapi.builders.GameEntityBuilder;
 import com.lucas.chessapi.domain.service.ContextCreateGameServiceTest;
 import com.lucas.chessapi.dto.game.PlayerDto;
 import com.lucas.chessapi.dto.request.CreateGameRequestDto;
@@ -24,7 +25,11 @@ public class CreateGameServiceTest extends ContextCreateGameServiceTest {
         givenOrderedPairFactoryReturns(new OrderedPair<>(player, adversary));
         givenUsers(user(1L, "player"), user(2L, "adversary"));
         givenTokenIs("1234", "1");
-        givenNewGameIdWillBe(1L);
+        givenNewGameWillBe(GameEntityBuilder.valid().id(1L)
+                .firstPlayer(player.toUserEntity())
+                .secondPlayer(adversary.toUserEntity())
+                .build()
+        );
         whenGameIsCreatedFor(request);
         thenShouldHaveNoErrors();
         thenResultShouldBe(new CreateGameResponseDto(
@@ -34,6 +39,7 @@ public class CreateGameServiceTest extends ContextCreateGameServiceTest {
         ));
     }
 
+
     @Test
     void shouldCreateGameWhenRequestIsValidWithChallengerSecond() {
         var request = new CreateGameRequestDto(2L, INVERTED);
@@ -42,7 +48,10 @@ public class CreateGameServiceTest extends ContextCreateGameServiceTest {
         givenOrderedPairFactoryReturns(new OrderedPair<>(adversary, player));
         givenUsers(user(1L, "player"), user(2L, "adversary"));
         givenTokenIs("1234", "1");
-        givenNewGameIdWillBe(1L);
+        givenNewGameWillBe(GameEntityBuilder.valid()
+                .firstPlayer(adversary.toUserEntity())
+                .secondPlayer(player.toUserEntity())
+                .build());
         whenGameIsCreatedFor(request);
         thenShouldHaveNoErrors();
         thenResultShouldBe(new CreateGameResponseDto(
