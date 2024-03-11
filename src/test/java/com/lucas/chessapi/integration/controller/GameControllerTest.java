@@ -62,12 +62,11 @@ public class GameControllerTest extends ContextGameControllerTest {
     }
 
     @Test
-    void shouldReturnStatus409WhenGameDontExist() throws Exception {
-        // TODO: CHANGE STATUS TO 404
+    void shouldReturnStatus404WhenGameDontExist() throws Exception {
         givenAuthenticationHappensFor(alice);
         whenGetGameRequestIsPerformedForId(-1L);
         thenShouldHaveNoErrors();
-        thenIsExpectedFromResponse(status().isConflict());
+        thenIsExpectedFromResponse(status().isNotFound());
     }
 
     @Test

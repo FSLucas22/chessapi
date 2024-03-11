@@ -8,6 +8,6 @@ public class GameNotFoundException extends BusinessException {
     }
 
     public GameNotFoundException(String message) {
-        this(message, HttpStatus.CONFLICT);
+        this(message, HttpStatus.NOT_FOUND);
     }
 }
