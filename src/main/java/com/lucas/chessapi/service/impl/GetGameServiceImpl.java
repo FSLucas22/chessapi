@@ -14,7 +14,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
 
+@Service
 @RequiredArgsConstructor
 public class GetGameServiceImpl implements GetGameService {
     private final GameRepository repository;
@@ -31,7 +33,7 @@ public class GetGameServiceImpl implements GetGameService {
         Pageable pagination = PageRequest.of(
                 pageNumber,
                 pageSize,
-                Sort.by(Sort.Order.asc("updated_at"))
+                Sort.by(Sort.Order.asc("updatedAt"))
         );
 
         var user = getUser(id);

@@ -1,5 +1,6 @@
 package com.lucas.chessapi.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.lucas.chessapi.dto.game.PlayerDto;
 import com.lucas.chessapi.model.GameEntity;
 
@@ -9,7 +10,11 @@ public record GetGameResponseDto(
         Long id,
         PlayerDto firstPlayer,
         PlayerDto secondPlayer,
+
+        @JsonFormat(pattern = "dd/MM/yyyy HH:mm")
         LocalDateTime createdAt,
+
+        @JsonFormat(pattern = "dd/MM/yyyy HH:mm")
         LocalDateTime updatedAt
 ) {
     public static GetGameResponseDto from(GameEntity game) {

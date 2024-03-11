@@ -15,7 +15,9 @@ import com.lucas.chessapi.security.jwt.TokenProcessor;
 import com.lucas.chessapi.service.CreateGameService;
 import com.lucas.chessapi.service.GetUserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
+@Service
 @RequiredArgsConstructor
 public class CreateGameServiceImpl implements CreateGameService {
     private final GetUserService getUserService;
@@ -35,7 +37,7 @@ public class CreateGameServiceImpl implements CreateGameService {
                         null, null)
         );
 
-        return new CreateGameResponseDto(newGame.getId(), order.first(), order.second());
+        return CreateGameResponseDto.from(newGame);
     }
 
     private void validateRequest(CreateGameRequestDto request) {
