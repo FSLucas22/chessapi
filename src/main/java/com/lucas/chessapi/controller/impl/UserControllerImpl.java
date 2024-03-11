@@ -6,8 +6,8 @@ import com.lucas.chessapi.dto.request.UserCreationRequestDto;
 import com.lucas.chessapi.dto.response.GetAllUsersResponseDto;
 import com.lucas.chessapi.dto.response.GetUserResponseDto;
 import com.lucas.chessapi.dto.response.UserCreationResponseDto;
+import com.lucas.chessapi.service.CreateUserService;
 import com.lucas.chessapi.service.GetUserService;
-import com.lucas.chessapi.service.UserCreationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +19,7 @@ import java.net.URI;
 @RequestMapping("/chessapi/user")
 @RequiredArgsConstructor
 public class UserControllerImpl implements UserController {
-    private final UserCreationService createUserService;
+    private final CreateUserService createUserService;
     private final GetUserService getUserService;
 
     @Override

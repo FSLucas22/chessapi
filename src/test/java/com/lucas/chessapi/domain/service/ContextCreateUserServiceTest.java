@@ -5,7 +5,7 @@ import com.lucas.chessapi.dto.request.UserCreationRequestDto;
 import com.lucas.chessapi.dto.response.UserCreationResponseDto;
 import com.lucas.chessapi.model.UserEntity;
 import com.lucas.chessapi.repository.UserRepository;
-import com.lucas.chessapi.service.impl.UserCreationServiceImpl;
+import com.lucas.chessapi.service.impl.CreateUserServiceImpl;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -28,7 +28,7 @@ public class ContextCreateUserServiceTest extends TestContextHelper {
     private PasswordEncoder encoder;
 
     @InjectMocks
-    private UserCreationServiceImpl service;
+    private CreateUserServiceImpl service;
 
     private UserCreationResponseDto response;
 

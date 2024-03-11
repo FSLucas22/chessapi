@@ -5,14 +5,14 @@ import com.lucas.chessapi.dto.response.UserCreationResponseDto;
 import com.lucas.chessapi.exceptions.UserCreationException;
 import com.lucas.chessapi.model.UserEntity;
 import com.lucas.chessapi.repository.UserRepository;
-import com.lucas.chessapi.service.UserCreationService;
+import com.lucas.chessapi.service.CreateUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class UserCreationServiceImpl implements UserCreationService {
+public class CreateUserServiceImpl implements CreateUserService {
     private final UserRepository repository;
     private final PasswordEncoder encoder;
 
