@@ -1,26 +1,32 @@
 package com.lucas.chessapi.integration.controller;
 
 import com.lucas.chessapi.builders.UserEntityBuilderExtension;
-import com.lucas.chessapi.domain.controller.ContextAuthControllerTest;
+import com.lucas.chessapi.domain.ControllerContextHelper;
 import com.lucas.chessapi.dto.request.AuthRequestDto;
 import com.lucas.chessapi.model.UserEntity;
+import com.lucas.chessapi.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static com.lucas.chessapi.Utils.generateRandomString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class AuthControllerTest extends ContextAuthControllerTest {
+public class AuthControllerTest extends ControllerContextHelper {
     @Autowired
-    private PasswordEncoder encoder;
+    UserRepository repository;
 
-    private UserEntity user;
-    private String unencodedPassword;
+    @Autowired
+    PasswordEncoder encoder;
+
+    UserEntity user;
+    String unencodedPassword;
 
     @BeforeEach
     void setUp() {
@@ -41,10 +47,12 @@ public class AuthControllerTest extends ContextAuthControllerTest {
     void shouldReturnStatusOkWhenRequestIsCorrect() throws Exception {
         var request = new AuthRequestDto("user@test.com", unencodedPassword);
 
-        givenUserExists(user);
-        whenAuthenticationIsMadeFor(request);
-        thenShouldHaveNoErrors();
-        thenIsExpectedFromResponse(
+        repository.save(user);
+        var performResult = mockMvc.perform(post("/chessapi/auth")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(request)));
+
+        performResult.andExpectAll(
                 status().isOk(),
                 jsonPath("$.username", equalTo("testuser")),
                 jsonPath("$.token", notNullValue())
@@ -54,9 +62,11 @@ public class AuthControllerTest extends ContextAuthControllerTest {
     @Test
     void shouldReturnStatusBadRequestWhenUserIsNotFound() throws Exception {
         var request = new AuthRequestDto("user@test.com", unencodedPassword);
-        whenAuthenticationIsMadeFor(request);
-        thenShouldHaveNoErrors();
-        thenIsExpectedFromResponse(
+        var performResult = mockMvc.perform(post("/chessapi/auth")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(request)));
+
+        performResult.andExpectAll(
                 status().isBadRequest(),
                 jsonPath("$.message", equalTo("Invalid email or password")),
                 jsonPath("$.statusCode", equalTo(400))
@@ -66,9 +76,11 @@ public class AuthControllerTest extends ContextAuthControllerTest {
     @Test
     void shouldReturnStatusBadRequestWhenPasswordIsIncorrect() throws Exception {
         var request = new AuthRequestDto("user@test.com", "xyz");
-        whenAuthenticationIsMadeFor(request);
-        thenShouldHaveNoErrors();
-        thenIsExpectedFromResponse(
+        var performResult = mockMvc.perform(post("/chessapi/auth")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(request)));
+
+        performResult.andExpectAll(
                 status().isBadRequest(),
                 jsonPath("$.message", equalTo("Invalid email or password")),
                 jsonPath("$.statusCode", equalTo(400))
