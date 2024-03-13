@@ -1,16 +1,39 @@
 package com.lucas.chessapi.unit.service;
 
 import com.lucas.chessapi.builders.UserEntityBuilderExtension;
-import com.lucas.chessapi.domain.service.ContextCreateUserServiceTest;
 import com.lucas.chessapi.dto.request.CreateUserRequestDto;
 import com.lucas.chessapi.dto.response.CreateUserResponseDto;
 import com.lucas.chessapi.exceptions.UserCreationException;
+import com.lucas.chessapi.model.UserEntity;
+import com.lucas.chessapi.repository.UserRepository;
+import com.lucas.chessapi.service.impl.CreateUserServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.util.Optional;
 
 import static com.lucas.chessapi.Utils.generateRandomString;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
-public class CreateUserServiceTest extends ContextCreateUserServiceTest {
+@ExtendWith(MockitoExtension.class)
+public class CreateUserServiceTest {
+    @Mock
+    private UserRepository repository;
+
+    @Mock
+    private PasswordEncoder encoder;
+
+    @InjectMocks
+    private CreateUserServiceImpl service;
+
     private CreateUserRequestDto request;
 
     @BeforeEach
@@ -24,8 +47,8 @@ public class CreateUserServiceTest extends ContextCreateUserServiceTest {
 
     @Test
     void shouldCreateValidUser() {
-        givenUserDontExistFor("test@email.com");
-        givenRepositoryReturnsOnSave(
+        when(repository.findByEmail(request.email())).thenReturn(Optional.empty());
+        when(repository.save(any())).thenReturn(
                 UserEntityBuilderExtension
                         .valid()
                         .id(1L)
@@ -33,23 +56,27 @@ public class CreateUserServiceTest extends ContextCreateUserServiceTest {
                         .email("test@email.com")
                         .build()
         );
-        givenEncodedPasswordIs(generateRandomString());
-        whenUserIsCreated(request);
-        thenShouldHaveNoErrors();
-        thenPasswordMustHaveBeenEncoded("test123");
-        thenResponseShouldBe(new CreateUserResponseDto(
-                1L,
-                "testuser",
-                "test@email.com"
-        ));
+        when(encoder.encode(any())).thenReturn(generateRandomString());
+        var response = service.create(request);
+        verify(encoder, times(1)).encode("test123");
+        assertThat(response)
+                .usingRecursiveComparison()
+                .isEqualTo(new CreateUserResponseDto(
+                        1L,
+                        "testuser",
+                        "test@email.com"
+                ));
     }
 
     @Test
     void shouldThrowUserCreationExceptionWhenEmailAlreadyExists() {
-        givenUserExistsFor("test@email.com");
-        whenUserIsCreated(request);
-        thenShouldThrow(UserCreationException.class, "Email already exists");
-        thenShouldNotEncodePassword();
-        thenShouldNotSaveUser();
+        when(repository.findByEmail(request.email())).thenReturn(Optional.of(new UserEntity()));
+
+        assertThatThrownBy(() -> service.create(request))
+                .isInstanceOf(UserCreationException.class)
+                .hasMessage("Email already exists");
+
+        verify(encoder, never()).encode(any());
+        verify(repository, never()).save(any());
     }
 }
