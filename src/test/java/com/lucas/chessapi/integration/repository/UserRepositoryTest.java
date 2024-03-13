@@ -56,11 +56,6 @@ public class UserRepositoryTest extends RepositoryContextHelper {
     @Test
     void shouldNotCreateUserWithRepeatedEmail() {
         given(userBuilder.build());
-        try {
-            repository.save(userBuilder.build());
-        } catch (Exception e) {
-            error = e;
-        }
         assertThatThrownBy(() -> repository.save(userBuilder.build()))
                 .isInstanceOf(DataIntegrityViolationException.class)
                 .hasMessageContainingAll(
