@@ -23,9 +23,9 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class UserRepositoryTest extends RepositoryContextHelper {
     @Autowired
-    private UserRepository repository;
+    UserRepository repository;
 
-    private UserEntityBuilder userBuilder;
+    UserEntityBuilder userBuilder;
 
     @BeforeEach
     void setUp() {

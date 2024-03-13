@@ -11,11 +11,12 @@ import java.util.Arrays;
 @ActiveProfiles("test")
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class RepositoryContextHelper extends TestContextHelper {
+public class RepositoryContextHelper {
     @Autowired
     private TestEntityManager entityManager;
 
-    protected <T> void given(T... entities) {
+    @SafeVarargs
+    protected final <T> void given(T... entities) {
         Arrays.stream(entities).forEach(entityManager::persist);
     }
 }

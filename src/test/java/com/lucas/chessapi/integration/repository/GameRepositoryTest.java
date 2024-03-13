@@ -1,13 +1,13 @@
 package com.lucas.chessapi.integration.repository;
 
 import com.lucas.chessapi.builders.GameEntityBuilder;
-import com.lucas.chessapi.builders.UserEntityBuilder;
-import com.lucas.chessapi.builders.UserEntityBuilderExtension;
-import com.lucas.chessapi.domain.repository.ContextGameRepositoryTest;
+import com.lucas.chessapi.domain.RepositoryContextHelper;
 import com.lucas.chessapi.model.GameEntity;
 import com.lucas.chessapi.model.UserEntity;
-import org.junit.jupiter.api.BeforeEach;
+import com.lucas.chessapi.repository.GameRepository;
+import com.lucas.chessapi.repository.UserRepository;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
@@ -15,62 +15,72 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
-public class GameRepositoryTest extends ContextGameRepositoryTest {
-    private UserEntityBuilder builder;
+import static com.lucas.chessapi.builders.UserEntityBuilderExtension.user;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-    @BeforeEach
-    void setUp() {
-        builder = UserEntityBuilderExtension
-                .valid()
-                .id(null)
-                .email("test@email.com");
-    }
+public class GameRepositoryTest extends RepositoryContextHelper {
+    @Autowired
+    private GameRepository gameRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Test
     void shouldReturnUserDataInEntity() {
-        var player = user("player");
-        var adversary = user("adversary");
+        // GIVEN
+        var player = user(null, "player");
+        var adversary = user(null, "adversary");
         var game = GameEntityBuilder.valid()
                 .id(null)
                 .firstPlayer(player)
                 .secondPlayer(adversary)
                 .build();
+
         given(player, adversary);
         given(game);
-        whenFindById(game.getId());
-        thenShouldHaveNoErrors();
-        thenResultShouldMatch(Optional.of(game));
+
+        // WHEN
+        var result = gameRepository.findById(game.getId());
+
+        // THEN
+        assertThat(result)
+                .usingRecursiveComparison()
+                .isEqualTo(Optional.of(game));
     }
 
     @Test
     void shouldNotSaveWithUserThatDontExist() {
-        var player = user("player");
-        var adversary = user("adversary");
+        // GIVEN
         var game = GameEntityBuilder
                 .valid()
                 .id(null)
-                .firstPlayer(player)
-                .secondPlayer(adversary)
+                .firstPlayer(user(-1L, "player"))
+                .secondPlayer(user(-2L, "adversary"))
                 .build();
 
-        whenSave(game);
-        thenShouldThrow(Exception.class);
+        // THEN
+        assertThrows(Exception.class, () -> gameRepository.save(game));
     }
 
     @Test
     void shouldNotSaveWithNullUser() {
-        whenSave(GameEntityBuilder.valid()
+        // GIVEN
+        var game = GameEntityBuilder.valid()
                 .id(null)
                 .firstPlayer(null)
                 .secondPlayer(null)
-                .build());
-        thenShouldThrow(Exception.class);
+                .build();
+
+        // THEN
+        assertThrows(Exception.class, () -> gameRepository.save(game));
     }
 
     @Test
     void shouldReturnAllGamesWithUser() {
-        var player = user("player");
-        var adversary = user("adversary");
+        // GIVEN
+        var player = user(null, "player");
+        var adversary = user(null, "adversary");
         var gameList = List.of(
                 game(adversary, player),
                 game(player, adversary),
@@ -87,14 +97,14 @@ public class GameRepositoryTest extends ContextGameRepositoryTest {
                 .limit(3)
                 .toList();
 
-        whenGetAllByUser(player, pagination);
-        thenShouldHaveNoErrors();
-        thenGamesShouldMatch(gameList);
-        thenShouldHaveMorePages();
-    }
+        // WHEN
+        var gamesSlice = gameRepository.findAllByUser(player, pagination);
 
-    private UserEntity user(String username) {
-        return builder.username(username).email(username + "@email.com").build();
+        // THEN
+        assertThat(gamesSlice.getContent())
+                .usingRecursiveComparison()
+                .isEqualTo(gameList);
+        assertThat(gamesSlice.hasNext()).isTrue();
     }
 
     private GameEntity game(UserEntity firstPlayer, UserEntity secondPlayer) {
