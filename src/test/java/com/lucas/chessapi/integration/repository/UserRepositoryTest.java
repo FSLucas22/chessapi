@@ -2,10 +2,12 @@ package com.lucas.chessapi.integration.repository;
 
 import com.lucas.chessapi.builders.UserEntityBuilder;
 import com.lucas.chessapi.builders.UserEntityBuilderExtension;
-import com.lucas.chessapi.domain.repository.ContextUserRepositoryTest;
+import com.lucas.chessapi.domain.RepositoryContextHelper;
 import com.lucas.chessapi.model.UserEntity;
+import com.lucas.chessapi.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -15,8 +17,14 @@ import org.springframework.data.domain.Sort;
 import java.util.List;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-public class UserRepositoryTest extends ContextUserRepositoryTest {
+
+public class UserRepositoryTest extends RepositoryContextHelper {
+    @Autowired
+    private UserRepository repository;
+
     private UserEntityBuilder userBuilder;
 
     @BeforeEach
@@ -31,25 +39,34 @@ public class UserRepositoryTest extends ContextUserRepositoryTest {
     void shouldFindUserByEmail() {
         var user = userBuilder.build();
         given(user);
-        whenFindByEmail("test@email.com");
-        thenReturnedUserShouldBeEqual(Optional.of(user));
+        var possibleUser = repository.findByEmail("test@email.com");
+        assertThat(possibleUser)
+                .usingRecursiveComparison()
+                .isEqualTo(Optional.of(user));
     }
 
     @Test
     void shouldReturnEmptyWhenEmailIsNotFound() {
-        whenFindByEmail("test@email.com");
-        thenReturnedUserShouldBeEqual(Optional.empty());
+        var possibleUser = repository.findByEmail("test@email.com");
+        assertThat(possibleUser)
+                .usingRecursiveComparison()
+                .isEqualTo(Optional.empty());
     }
 
     @Test
     void shouldNotCreateUserWithRepeatedEmail() {
         given(userBuilder.build());
-        whenUserIsSaved(userBuilder.build());
-        thenShouldThrowContaining(
-                DataIntegrityViolationException.class,
-                "Unique index or primary key violation",
-                "test@email.com"
-        );
+        try {
+            repository.save(userBuilder.build());
+        } catch (Exception e) {
+            error = e;
+        }
+        assertThatThrownBy(() -> repository.save(userBuilder.build()))
+                .isInstanceOf(DataIntegrityViolationException.class)
+                .hasMessageContainingAll(
+                        "Unique index or primary key violation",
+                        "test@email.com"
+                );
     }
 
     @Test
@@ -60,10 +77,10 @@ public class UserRepositoryTest extends ContextUserRepositoryTest {
         var pagination = PageRequest.of(0, 2, sort);
         var expectedPage = new PageImpl<>(List.of(alice, bob), pagination, 2);
         given(bob, alice);
-        whenFindAllIsCalledWith(pagination);
-        thenShouldHaveNoErrors();
-
-        thenReturnedPageShoudBe(expectedPage);
+        var page = repository.findAll(pagination);
+        assertThat(page)
+                .usingRecursiveComparison()
+                .isEqualTo(expectedPage);
     }
 
     @Test
@@ -71,8 +88,9 @@ public class UserRepositoryTest extends ContextUserRepositoryTest {
         var sort = Sort.by(Sort.Order.asc("username"));
         var pagination = PageRequest.of(5, 2, sort);
         Page<UserEntity> expectedPage = new PageImpl<>(List.of(), pagination, 0);
-        whenFindAllIsCalledWith(pagination);
-        thenShouldHaveNoErrors();
-        thenReturnedPageShoudBe(expectedPage);
+        var page = repository.findAll(pagination);
+        assertThat(page)
+                .usingRecursiveComparison()
+                .isEqualTo(expectedPage);
     }
 }
