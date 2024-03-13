@@ -1,7 +1,7 @@
 package com.lucas.chessapi.service.impl;
 
-import com.lucas.chessapi.dto.request.UserCreationRequestDto;
-import com.lucas.chessapi.dto.response.UserCreationResponseDto;
+import com.lucas.chessapi.dto.request.CreateUserRequestDto;
+import com.lucas.chessapi.dto.response.CreateUserResponseDto;
 import com.lucas.chessapi.exceptions.UserCreationException;
 import com.lucas.chessapi.model.UserEntity;
 import com.lucas.chessapi.repository.UserRepository;
@@ -17,13 +17,13 @@ public class CreateUserServiceImpl implements CreateUserService {
     private final PasswordEncoder encoder;
 
     @Override
-    public UserCreationResponseDto create(UserCreationRequestDto request) {
+    public CreateUserResponseDto create(CreateUserRequestDto request) {
         if (repository.findByEmail(request.email()).isPresent()) {
             throw new UserCreationException("Email already exists");
         }
         UserEntity user = request.toUserEntity(encoder);
         var savedUser = repository.save(user);
-        return new UserCreationResponseDto(
+        return new CreateUserResponseDto(
                 savedUser.getId(),
                 savedUser.getUsername(),
                 savedUser.getEmail()

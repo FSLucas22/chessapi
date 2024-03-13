@@ -2,9 +2,9 @@ package com.lucas.chessapi.domain.controller;
 
 import com.lucas.chessapi.builders.UserEntityBuilderExtension;
 import com.lucas.chessapi.domain.ControllerContextHelper;
+import com.lucas.chessapi.dto.request.CreateUserRequestDto;
 import com.lucas.chessapi.dto.request.GetAllUsersRequestDto;
-import com.lucas.chessapi.dto.request.UserCreationRequestDto;
-import com.lucas.chessapi.dto.response.UserCreationResponseDto;
+import com.lucas.chessapi.dto.response.CreateUserResponseDto;
 import com.lucas.chessapi.model.UserEntity;
 import com.lucas.chessapi.repository.UserRepository;
 import com.lucas.chessapi.security.jwt.TokenProcessor;
@@ -66,7 +66,7 @@ public class ContextUserControllerTest extends ControllerContextHelper {
     }
 
     protected void whenUserCreationRequestIsSend(
-            UserCreationRequestDto requestContent
+            CreateUserRequestDto requestContent
     ) {
         whenRequestIsPerformed(post("/chessapi/user")
                         .contentType(MediaType.APPLICATION_JSON),
@@ -94,7 +94,7 @@ public class ContextUserControllerTest extends ControllerContextHelper {
                 .getResponse()
                 .getContentAsString();
 
-        var response = mapper.readValue(responseBody, UserCreationResponseDto.class);
+        var response = mapper.readValue(responseBody, CreateUserResponseDto.class);
         var id = response.id();
 
         result.andExpect(header().string("location", location + id));

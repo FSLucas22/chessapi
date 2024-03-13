@@ -1,11 +1,11 @@
 package com.lucas.chessapi.controller.impl;
 
 import com.lucas.chessapi.controller.UserController;
+import com.lucas.chessapi.dto.request.CreateUserRequestDto;
 import com.lucas.chessapi.dto.request.GetAllUsersRequestDto;
-import com.lucas.chessapi.dto.request.UserCreationRequestDto;
+import com.lucas.chessapi.dto.response.CreateUserResponseDto;
 import com.lucas.chessapi.dto.response.GetAllUsersResponseDto;
 import com.lucas.chessapi.dto.response.GetUserResponseDto;
-import com.lucas.chessapi.dto.response.UserCreationResponseDto;
 import com.lucas.chessapi.service.CreateUserService;
 import com.lucas.chessapi.service.GetUserService;
 import jakarta.validation.Valid;
@@ -24,8 +24,8 @@ public class UserControllerImpl implements UserController {
 
     @Override
     @PostMapping
-    public ResponseEntity<UserCreationResponseDto> create(
-            @RequestBody @Valid UserCreationRequestDto request
+    public ResponseEntity<CreateUserResponseDto> create(
+            @RequestBody @Valid CreateUserRequestDto request
     ) {
         var response = createUserService.create(request);
         return ResponseEntity

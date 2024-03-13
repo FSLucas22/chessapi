@@ -1,8 +1,8 @@
 package com.lucas.chessapi.domain.service;
 
 import com.lucas.chessapi.domain.TestContextHelper;
-import com.lucas.chessapi.dto.request.UserCreationRequestDto;
-import com.lucas.chessapi.dto.response.UserCreationResponseDto;
+import com.lucas.chessapi.dto.request.CreateUserRequestDto;
+import com.lucas.chessapi.dto.response.CreateUserResponseDto;
 import com.lucas.chessapi.model.UserEntity;
 import com.lucas.chessapi.repository.UserRepository;
 import com.lucas.chessapi.service.impl.CreateUserServiceImpl;
@@ -30,7 +30,7 @@ public class ContextCreateUserServiceTest extends TestContextHelper {
     @InjectMocks
     private CreateUserServiceImpl service;
 
-    private UserCreationResponseDto response;
+    private CreateUserResponseDto response;
 
     protected void givenUserDontExistFor(String email) {
         when(repository.findByEmail(email)).thenReturn(Optional.empty());
@@ -48,7 +48,7 @@ public class ContextCreateUserServiceTest extends TestContextHelper {
         when(encoder.encode(any())).thenReturn(encodedPassword);
     }
 
-    protected void whenUserIsCreated(UserCreationRequestDto request) {
+    protected void whenUserIsCreated(CreateUserRequestDto request) {
         try {
             response = service.create(request);
         } catch (Exception e) {
@@ -60,7 +60,7 @@ public class ContextCreateUserServiceTest extends TestContextHelper {
         verify(encoder, times(1)).encode(password);
     }
 
-    protected void thenResponseShouldBe(UserCreationResponseDto response) {
+    protected void thenResponseShouldBe(CreateUserResponseDto response) {
         assertThat(this.response)
                 .usingRecursiveComparison()
                 .isEqualTo(response);

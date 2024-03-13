@@ -1,8 +1,8 @@
 package com.lucas.chessapi.service;
 
-import com.lucas.chessapi.dto.request.UserCreationRequestDto;
-import com.lucas.chessapi.dto.response.UserCreationResponseDto;
+import com.lucas.chessapi.dto.request.CreateUserRequestDto;
+import com.lucas.chessapi.dto.response.CreateUserResponseDto;
 
 public interface CreateUserService {
-    UserCreationResponseDto create(UserCreationRequestDto request);
+    CreateUserResponseDto create(CreateUserRequestDto request);
 }

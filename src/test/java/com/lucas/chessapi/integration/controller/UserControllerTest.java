@@ -2,8 +2,8 @@ package com.lucas.chessapi.integration.controller;
 
 import com.lucas.chessapi.builders.UserEntityBuilderExtension;
 import com.lucas.chessapi.domain.controller.ContextUserControllerTest;
+import com.lucas.chessapi.dto.request.CreateUserRequestDto;
 import com.lucas.chessapi.dto.request.GetAllUsersRequestDto;
-import com.lucas.chessapi.dto.request.UserCreationRequestDto;
 import com.lucas.chessapi.model.UserEntity;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.web.servlet.ResultMatcher;
@@ -20,7 +20,7 @@ public class UserControllerTest extends ContextUserControllerTest {
 
     @Test
     void shouldReturnStatus201WhenRequestIsValid() throws Exception {
-        var request = new UserCreationRequestDto(
+        var request = new CreateUserRequestDto(
                 "testuser",
                 "test@email.com",
                 "test123"
@@ -39,7 +39,7 @@ public class UserControllerTest extends ContextUserControllerTest {
 
     @Test
     void shouldReturnStatus400WhenRequestFieldsAreBlank() throws Exception {
-        var request = new UserCreationRequestDto(" ", " ", " ");
+        var request = new CreateUserRequestDto(" ", " ", " ");
         whenUserCreationRequestIsSend(request);
         thenShouldHaveNoErrors();
         thenIsExpectedFromResponse(
@@ -55,7 +55,7 @@ public class UserControllerTest extends ContextUserControllerTest {
 
     @Test
     void shouldReturnStatus400WhenRequestFieldsAreNull() throws Exception {
-        var request = new UserCreationRequestDto(null, null, null);
+        var request = new CreateUserRequestDto(null, null, null);
         whenUserCreationRequestIsSend(request);
         thenShouldHaveNoErrors();
         thenIsExpectedFromResponse(
@@ -71,7 +71,7 @@ public class UserControllerTest extends ContextUserControllerTest {
 
     @Test
     void shouldReturnStatus409WhenEmailAlreadyExists() throws Exception {
-        var request = UserCreationRequestDto.fromUserEntity(validUserEntity());
+        var request = CreateUserRequestDto.fromUserEntity(validUserEntity());
 
         givenEmailAlreadyExistsFor(request.email());
 
