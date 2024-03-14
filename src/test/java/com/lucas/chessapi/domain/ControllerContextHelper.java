@@ -13,8 +13,6 @@ import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 
 @ActiveProfiles("test")
 @SpringBootTest
@@ -50,11 +48,6 @@ public class ControllerContextHelper extends TestContextHelper {
         } catch (Exception e) {
             error = e;
         }
-    }
-
-    protected void thenHeaderAuthorizationMustExist() {
-        assertThat(authContext.getToken()).isNotNull();
-        assertThat(authContext.getHeader()).isNotNull();
     }
 
     protected void thenIsExpectedFromResponse(ResultMatcher... resultMatchers) throws Exception {
