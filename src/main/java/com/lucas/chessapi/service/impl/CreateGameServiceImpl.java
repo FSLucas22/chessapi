@@ -1,5 +1,6 @@
 package com.lucas.chessapi.service.impl;
 
+import com.lucas.chessapi.configuration.GameConfiguration;
 import com.lucas.chessapi.dto.game.PlayerDto;
 import com.lucas.chessapi.dto.request.CreateGameRequestDto;
 import com.lucas.chessapi.dto.response.CreateGameResponseDto;
@@ -8,6 +9,7 @@ import com.lucas.chessapi.exceptions.InvalidGameException;
 import com.lucas.chessapi.exceptions.PlayerNotFoundException;
 import com.lucas.chessapi.game.OrderedPair;
 import com.lucas.chessapi.game.OrderedPairFactory;
+import com.lucas.chessapi.game.enums.GameStatus;
 import com.lucas.chessapi.game.enums.OrderedPairCreationType;
 import com.lucas.chessapi.model.GameEntity;
 import com.lucas.chessapi.repository.GameRepository;
@@ -16,6 +18,8 @@ import com.lucas.chessapi.service.CreateGameService;
 import com.lucas.chessapi.service.GetUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -33,8 +37,17 @@ public class CreateGameServiceImpl implements CreateGameService {
 
         var newGame = repository.save(
                 new GameEntity(
-                        null, order.first().toUserEntity(), order.second().toUserEntity(),
-                        null, null)
+                        null,
+                        order.first().toUserEntity(),
+                        order.second().toUserEntity(),
+                        "",
+                        0,
+                        GameStatus.WAITING_FIRST_PLAYER,
+                        GameConfiguration.WAITING_TIME_MILLIS,
+                        GameConfiguration.WAITING_TIME_MILLIS,
+                        LocalDateTime.now(),
+                        LocalDateTime.now()
+                )
         );
 
         return CreateGameResponseDto.from(newGame);

@@ -59,6 +59,11 @@ public class GetGameServiceTest {
                         game.getId(),
                         new PlayerDto(firstPlayer.getId(), firstPlayer.getUsername()),
                         new PlayerDto(secondPlayer.getId(), secondPlayer.getUsername()),
+                        game.getMoves(),
+                        game.getNumberOfMoves(),
+                        game.getStatus(),
+                        game.getFirstPlayerRemainingTimeMillis(),
+                        game.getSecondPlayerRemainingTimeMillis(),
                         game.getCreatedAt(),
                         game.getUpdatedAt()
                 ));

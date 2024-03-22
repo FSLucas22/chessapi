@@ -11,6 +11,8 @@ import java.util.Random;
 
 @Configuration
 public class GameConfiguration {
+    public static final Long WAITING_TIME_MILLIS = 20L * 1000;
+
     @Bean
     public OrderedPairFactory<PlayerDto> orderedPairFactory(
             RandomElementSelector<OrderedPairCreationType> randomElementSelector

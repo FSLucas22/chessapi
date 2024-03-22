@@ -1,6 +1,7 @@
 package com.lucas.chessapi.unit.service;
 
 import com.lucas.chessapi.builders.GameEntityBuilder;
+import com.lucas.chessapi.configuration.GameConfiguration;
 import com.lucas.chessapi.dto.game.PlayerDto;
 import com.lucas.chessapi.dto.request.CreateGameRequestDto;
 import com.lucas.chessapi.dto.response.CreateGameResponseDto;
@@ -10,6 +11,7 @@ import com.lucas.chessapi.exceptions.InvalidGameException;
 import com.lucas.chessapi.exceptions.PlayerNotFoundException;
 import com.lucas.chessapi.game.OrderedPair;
 import com.lucas.chessapi.game.OrderedPairFactory;
+import com.lucas.chessapi.game.enums.GameStatus;
 import com.lucas.chessapi.model.UserEntity;
 import com.lucas.chessapi.repository.GameRepository;
 import com.lucas.chessapi.security.jwt.JwtTokenDto;
@@ -75,7 +77,12 @@ public class CreateGameServiceTest {
                 .isEqualTo(new CreateGameResponseDto(
                         1L,
                         new PlayerDto(1L, "player"),
-                        new PlayerDto(2L, "adversary")
+                        new PlayerDto(2L, "adversary"),
+                        "",
+                        0,
+                        GameStatus.WAITING_FIRST_PLAYER,
+                        GameConfiguration.WAITING_TIME_MILLIS,
+                        GameConfiguration.WAITING_TIME_MILLIS
                 ));
     }
 
@@ -105,7 +112,12 @@ public class CreateGameServiceTest {
                 .isEqualTo(new CreateGameResponseDto(
                         1L,
                         new PlayerDto(2L, "adversary"),
-                        new PlayerDto(1L, "player")
+                        new PlayerDto(1L, "player"),
+                        "",
+                        0,
+                        GameStatus.WAITING_FIRST_PLAYER,
+                        GameConfiguration.WAITING_TIME_MILLIS,
+                        GameConfiguration.WAITING_TIME_MILLIS
                 ));
     }
 

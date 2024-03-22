@@ -1,5 +1,6 @@
 package com.lucas.chessapi.model;
 
+import com.lucas.chessapi.game.enums.GameStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -30,6 +31,22 @@ public class GameEntity {
     @JoinColumn(nullable = false)
     private UserEntity secondPlayer;
 
+    @Column(nullable = false)
+    private String moves;
+
+    @Column(nullable = false)
+    private Integer numberOfMoves;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private GameStatus status;
+
+    @Column(nullable = false)
+    private Long firstPlayerRemainingTimeMillis;
+
+    @Column(nullable = false)
+    private Long secondPlayerRemainingTimeMillis;
+
     @Column(nullable = false, updatable = false)
     @CreationTimestamp
     private LocalDateTime createdAt = LocalDateTime.now();
@@ -37,5 +54,4 @@ public class GameEntity {
     @Column(nullable = false)
     @UpdateTimestamp
     private LocalDateTime updatedAt = LocalDateTime.now();
-
 }
