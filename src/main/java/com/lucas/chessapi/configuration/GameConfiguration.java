@@ -1,6 +1,7 @@
 package com.lucas.chessapi.configuration;
 
 import com.lucas.chessapi.dto.game.PlayerDto;
+import com.lucas.chessapi.game.GameStatusManager;
 import com.lucas.chessapi.game.OrderedPairFactory;
 import com.lucas.chessapi.game.RandomElementSelector;
 import com.lucas.chessapi.game.enums.OrderedPairCreationType;
@@ -23,5 +24,10 @@ public class GameConfiguration {
     @Bean
     public RandomElementSelector<OrderedPairCreationType> randomElementSelector() {
         return new RandomElementSelector<>(new Random());
+    }
+
+    @Bean
+    public GameStatusManager gameStatusManager() {
+        return new GameStatusManager();
     }
 }
