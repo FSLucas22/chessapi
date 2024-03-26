@@ -9,6 +9,7 @@ import com.lucas.chessapi.dto.response.GetUserResponseDto;
 import com.lucas.chessapi.exceptions.GameNotFoundException;
 import com.lucas.chessapi.exceptions.GetUserException;
 import com.lucas.chessapi.exceptions.PlayerNotFoundException;
+import com.lucas.chessapi.game.enums.GameStatus;
 import com.lucas.chessapi.model.GameEntity;
 import com.lucas.chessapi.model.UserEntity;
 import com.lucas.chessapi.repository.GameRepository;
@@ -109,6 +110,146 @@ public class GetGameServiceTest {
         assertThat(exception.getPlayerId()).isEqualTo(1L);
         verify(repository, never()).findAllByUser(any(), any());
         verify(repository, never()).findById(any());
+    }
+
+    @Test
+    void shouldExpireGameWhenFirstPlayerDontMove() {
+        var game = GameEntityBuilder.valid()
+                .id(1L).status(GameStatus.WAITING_FIRST_PLAYER)
+                .firstPlayerRemainingTimeMillis(0L)
+                .build();
+        var firstPlayer = game.getFirstPlayer();
+        var secondPlayer = game.getSecondPlayer();
+        when(repository.findById(game.getId()))
+                .thenReturn(Optional.of(game));
+        when(repository.save(game))
+                .thenReturn(game);
+
+        var result = service.getById(1L);
+
+        assertThat(result)
+                .usingRecursiveComparison()
+                .isEqualTo(new GetGameResponseDto(
+                        game.getId(),
+                        PlayerDto.from(firstPlayer),
+                        PlayerDto.from(secondPlayer),
+                        game.getMoves(),
+                        game.getNumberOfMoves(),
+                        GameStatus.EXPIRED,
+                        0L,
+                        game.getSecondPlayerRemainingTimeMillis(),
+                        game.getCreatedAt(),
+                        game.getUpdatedAt()
+                ));
+
+        verify(repository, times(1)).save(game);
+    }
+
+    @Test
+    void shouldExpireGameWhenSecondPlayerDontMove() {
+        var game = GameEntityBuilder.valid()
+                .numberOfMoves(1)
+                .id(1L).status(GameStatus.WAITING_SECOND_PLAYER)
+                .secondPlayerRemainingTimeMillis(0L)
+                .build();
+
+        var firstPlayer = game.getFirstPlayer();
+        var secondPlayer = game.getSecondPlayer();
+        when(repository.findById(game.getId()))
+                .thenReturn(Optional.of(game));
+        when(repository.save(game))
+                .thenReturn(game);
+
+        var result = service.getById(1L);
+
+        assertThat(result)
+                .usingRecursiveComparison()
+                .isEqualTo(new GetGameResponseDto(
+                        game.getId(),
+                        PlayerDto.from(firstPlayer),
+                        PlayerDto.from(secondPlayer),
+                        game.getMoves(),
+                        game.getNumberOfMoves(),
+                        GameStatus.EXPIRED,
+                        game.getFirstPlayerRemainingTimeMillis(),
+                        0L,
+                        game.getCreatedAt(),
+                        game.getUpdatedAt()
+                ));
+
+        verify(repository, times(1)).save(game);
+    }
+
+    @Test
+    void shouldGiveFirstPlayerWinWhenSecondPlayerLoseOnTime() {
+        var game = GameEntityBuilder.valid()
+                .id(1L)
+                .numberOfMoves(4)
+                .status(GameStatus.WAITING_SECOND_PLAYER)
+                .secondPlayerRemainingTimeMillis(0L)
+                .build();
+
+        var firstPlayer = game.getFirstPlayer();
+        var secondPlayer = game.getSecondPlayer();
+        when(repository.findById(game.getId()))
+                .thenReturn(Optional.of(game));
+        when(repository.save(game))
+                .thenReturn(game);
+
+        var result = service.getById(1L);
+
+        assertThat(result)
+                .usingRecursiveComparison()
+                .isEqualTo(new GetGameResponseDto(
+                        game.getId(),
+                        PlayerDto.from(firstPlayer),
+                        PlayerDto.from(secondPlayer),
+                        game.getMoves(),
+                        game.getNumberOfMoves(),
+                        GameStatus.WON_BY_FIRST_PLAYER,
+                        game.getFirstPlayerRemainingTimeMillis(),
+                        0L,
+                        game.getCreatedAt(),
+                        game.getUpdatedAt()
+                ));
+
+        verify(repository, times(1)).save(game);
+    }
+
+    @Test
+    void shouldGiveSecondPlayerWinWhenFirstPlayerLoseOnTime() {
+        var game = GameEntityBuilder.valid()
+                .id(1L)
+                .numberOfMoves(3)
+                .status(GameStatus.WAITING_FIRST_PLAYER)
+                .firstPlayerRemainingTimeMillis(0L)
+                .build();
+
+        var firstPlayer = game.getFirstPlayer();
+        var secondPlayer = game.getSecondPlayer();
+        when(repository.findById(game.getId()))
+                .thenReturn(Optional.of(game));
+        when(repository.save(game))
+                .thenReturn(game);
+
+        var result = service.getById(1L);
+
+        assertThat(result)
+                .usingRecursiveComparison()
+                .isEqualTo(new GetGameResponseDto(
+                        game.getId(),
+                        PlayerDto.from(firstPlayer),
+                        PlayerDto.from(secondPlayer),
+                        game.getMoves(),
+                        game.getNumberOfMoves(),
+                        GameStatus.WON_BY_SECOND_PLAYER,
+                        0L,
+                        game.getSecondPlayerRemainingTimeMillis(),
+                        game.getCreatedAt(),
+                        game.getUpdatedAt()
+                ));
+
+        verify(repository, times(1)).save(game);
     }
 
     GameEntityBuilder game(Long id) {

@@ -4,6 +4,7 @@ import com.lucas.chessapi.builders.GameEntityBuilder;
 import com.lucas.chessapi.domain.ControllerContextHelper;
 import com.lucas.chessapi.dto.request.CreateGameRequestDto;
 import com.lucas.chessapi.dto.response.CreateGameResponseDto;
+import com.lucas.chessapi.game.enums.GameStatus;
 import com.lucas.chessapi.game.enums.OrderedPairCreationType;
 import com.lucas.chessapi.model.GameEntity;
 import com.lucas.chessapi.model.UserEntity;
@@ -165,6 +166,78 @@ public class GameControllerTest extends ControllerContextHelper {
         var request = new CreateGameRequestDto(1L, OrderedPairCreationType.AS_PASSED);
         performCreateGameRequestFor(request, "").andExpect(status().isForbidden());
     }
+
+    @Test
+    void shouldExpireGameWhenFirstPlayerDontMakeFirstMoveInTime() throws Exception {
+        var header = generateAuthenticationFor(alice);
+        var game = GameEntityBuilder.valid()
+                .id(null)
+                .firstPlayer(alice)
+                .secondPlayer(bob)
+                .status(GameStatus.WAITING_FIRST_PLAYER)
+                .numberOfMoves(0)
+                .firstPlayerRemainingTimeMillis(0L)
+                .build();
+        given(game);
+
+        performGetGameRequestIsPerformedFor(game.getId(), header)
+                .andExpect(jsonPath("$.status", equalTo(GameStatus.EXPIRED.toString())));
+    }
+
+    @Test
+    void shouldExpireGameWhenSecondPlayerDontMakeSecondMoveInTime() throws Exception {
+        var header = generateAuthenticationFor(alice);
+        var game = GameEntityBuilder.valid()
+                .id(null)
+                .firstPlayer(alice)
+                .secondPlayer(bob)
+                .status(GameStatus.WAITING_SECOND_PLAYER)
+                .numberOfMoves(1)
+                .secondPlayerRemainingTimeMillis(0L)
+                .build();
+
+        given(game);
+
+        performGetGameRequestIsPerformedFor(game.getId(), header)
+                .andExpect(jsonPath("$.status", equalTo(GameStatus.EXPIRED.toString())));
+    }
+
+    @Test
+    void shouldGiveFirstPlayerWinWhenSecondPlayerLoseOnTime() throws Exception {
+        var header = generateAuthenticationFor(alice);
+        var game = GameEntityBuilder.valid()
+                .id(null)
+                .firstPlayer(alice)
+                .secondPlayer(bob)
+                .status(GameStatus.WAITING_SECOND_PLAYER)
+                .numberOfMoves(4)
+                .secondPlayerRemainingTimeMillis(0L)
+                .build();
+
+        given(game);
+
+        performGetGameRequestIsPerformedFor(game.getId(), header)
+                .andExpect(jsonPath("$.status", equalTo(GameStatus.WON_BY_FIRST_PLAYER.toString())));
+    }
+
+    @Test
+    void shouldGiveSecondPlayerWinWhenFirstPlayerLoseOnTime() throws Exception {
+        var header = generateAuthenticationFor(alice);
+        var game = GameEntityBuilder.valid()
+                .id(null)
+                .firstPlayer(alice)
+                .secondPlayer(bob)
+                .status(GameStatus.WAITING_FIRST_PLAYER)
+                .numberOfMoves(3)
+                .firstPlayerRemainingTimeMillis(0L)
+                .build();
+
+        given(game);
+
+        performGetGameRequestIsPerformedFor(game.getId(), header)
+                .andExpect(jsonPath("$.status", equalTo(GameStatus.WON_BY_SECOND_PLAYER.toString())));
+    }
+
 
     ResultMatcher[] gameInIndexMatches(Integer index, GameEntity game) {
         var field = String.format("$.games[%d]", index);
