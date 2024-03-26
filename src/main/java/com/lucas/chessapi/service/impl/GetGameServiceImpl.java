@@ -7,8 +7,6 @@ import com.lucas.chessapi.exceptions.GameNotFoundException;
 import com.lucas.chessapi.exceptions.GetUserException;
 import com.lucas.chessapi.exceptions.PlayerNotFoundException;
 import com.lucas.chessapi.game.GameStatusManager;
-import com.lucas.chessapi.game.enums.GameStatus;
-import com.lucas.chessapi.model.GameEntity;
 import com.lucas.chessapi.model.UserEntity;
 import com.lucas.chessapi.repository.GameRepository;
 import com.lucas.chessapi.service.GetGameService;
@@ -60,24 +58,4 @@ public class GetGameServiceImpl implements GetGameService {
         }
     }
 
-    private Boolean timeIsUp(GameEntity game) {
-        return game.getFirstPlayerRemainingTimeMillis() == 0 ||
-                game.getSecondPlayerRemainingTimeMillis() == 0;
-    }
-
-    private Boolean inFirstMoves(GameEntity game) {
-        return game.getNumberOfMoves() < 2;
-    }
-
-    private Boolean isExpired(GameEntity game) {
-        return timeIsUp(game) && inFirstMoves(game);
-    }
-
-    private Boolean isLostOnTimeBySecondPlayer(GameEntity game) {
-        return timeIsUp(game) && game.getStatus() == GameStatus.WAITING_SECOND_PLAYER && !inFirstMoves(game);
-    }
-
-    private Boolean isLostOnTimeByFirstPlayer(GameEntity game) {
-        return timeIsUp(game) && game.getStatus() == GameStatus.WAITING_FIRST_PLAYER && !inFirstMoves(game);
-    }
 }
