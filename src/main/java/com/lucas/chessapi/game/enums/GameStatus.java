@@ -5,5 +5,6 @@ public enum GameStatus {
     WAITING_SECOND_PLAYER,
     EXPIRED,
     WON_BY_FIRST_PLAYER,
-    WON_BY_SECOND_PLAYER
+    WON_BY_SECOND_PLAYER,
+    DRAWN
 }

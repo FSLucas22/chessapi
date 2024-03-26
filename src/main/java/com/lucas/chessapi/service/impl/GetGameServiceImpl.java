@@ -6,6 +6,7 @@ import com.lucas.chessapi.dto.response.GetGameResponseDto;
 import com.lucas.chessapi.exceptions.GameNotFoundException;
 import com.lucas.chessapi.exceptions.GetUserException;
 import com.lucas.chessapi.exceptions.PlayerNotFoundException;
+import com.lucas.chessapi.game.GameStatusManager;
 import com.lucas.chessapi.game.enums.GameStatus;
 import com.lucas.chessapi.model.GameEntity;
 import com.lucas.chessapi.model.UserEntity;
@@ -23,11 +24,12 @@ import org.springframework.stereotype.Service;
 public class GetGameServiceImpl implements GetGameService {
     private final GameRepository repository;
     private final GetUserService userService;
+    private final GameStatusManager gameStatusManager;
 
     @Override
     public GetGameResponseDto getById(Long id) {
         var game = repository.findById(id).orElseThrow(() -> new GameNotFoundException("Game not found"));
-        var status = calculateStatus(game);
+        var status = gameStatusManager.calculateStatus(game);
         var statusIsChanged = !status.equals(game.getStatus());
         if (statusIsChanged) {
             game.setStatus(status);
@@ -48,22 +50,6 @@ public class GetGameServiceImpl implements GetGameService {
         var gameSlice = repository.findAllByUser(user, pagination);
         var gameList = gameSlice.stream().map(GetGameResponseDto::from).toList();
         return new GetAllGamesResponseDto(PlayerDto.from(user), gameList, gameSlice.hasNext());
-    }
-
-    private GameStatus calculateStatus(GameEntity game) {
-        if (isExpired(game)) {
-            return GameStatus.EXPIRED;
-        }
-
-        if (isLostOnTimeBySecondPlayer(game)) {
-            return GameStatus.WON_BY_FIRST_PLAYER;
-        }
-
-        if (isLostOnTimeByFirstPlayer(game)) {
-            return GameStatus.WON_BY_SECOND_PLAYER;
-        }
-
-        return game.getStatus();
     }
 
     private UserEntity getUser(Long id) {
